@@ -1,1 +1,1 @@
-{"overall_status":"PASS","checks":[{"name":"required_artifacts","status":"PASS"},{"name":"template_fields","status":"PASS"},{"name":"secret_risk","status":"PASS"},{"name":"large_files","status":"PASS"},{"name":"forbidden_patterns","status":"PASS"}]}
+{"overall_status":"PASS","gate_decision":"PASS","mode":"control-pack","counts_by_status":{"PASS":6,"PASS_WITH_WARNINGS":0,"HOLD":0,"BLOCKED":0},"recommended_next_action":"Proceed to controlled review/next approved gate."}

@@ -1,1 +1,1 @@
-{"package":"software-build-control","stage":"automation-mvp","safe":true,"active_workflows":false,"app_code_included":false}
+{"package":"software-build-control","stage":"management-system-plus-validation-hardening","safe":true,"active_workflows":false,"app_code_included":false,"app_repos_modified":false,"n8n_included":false,"required_file_count":62,"last_job_card":"SBC-JC-0005A"}
