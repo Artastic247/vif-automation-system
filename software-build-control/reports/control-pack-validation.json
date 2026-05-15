@@ -1,0 +1,1 @@
+{"overall_status":"PASS","checks":[{"name":"required_artifacts","status":"PASS"},{"name":"template_fields","status":"PASS"},{"name":"secret_risk","status":"PASS"},{"name":"large_files","status":"PASS"},{"name":"forbidden_patterns","status":"PASS"}]}

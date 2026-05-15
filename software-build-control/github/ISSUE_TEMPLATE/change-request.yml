@@ -1,0 +1,32 @@
+name: Change request
+body:
+  - type: textarea
+    id: app_module
+    attributes: {label: App/module}
+  - type: textarea
+    id: request
+    attributes: {label: Requested change}
+  - type: textarea
+    id: expected
+    attributes: {label: Expected behaviour}
+  - type: textarea
+    id: current
+    attributes: {label: Actual/current behaviour}
+  - type: textarea
+    id: evidence
+    attributes: {label: Evidence}
+  - type: input
+    id: branch_version
+    attributes: {label: Branch/version}
+  - type: input
+    id: environment
+    attributes: {label: Environment}
+  - type: textarea
+    id: scope
+    attributes: {label: Scope in/out and prohibited changes}
+  - type: textarea
+    id: verification
+    attributes: {label: Verification required}
+  - type: textarea
+    id: rollback
+    attributes: {label: Rollback route}
