@@ -1,0 +1,23 @@
+name: Control Pack Validate Pilot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Run safe control-pack validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run safe validation
+        run: python software-build-control/scripts/validate_control_pack.py --root software-build-control --mode control-pack
