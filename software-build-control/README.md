@@ -1,6 +1,6 @@
 # Software Build Control System
 
-Purpose: prevent context drift, truncation, uncontrolled scope, false PASS decisions, unsafe tenant rollout, and unverified AI-assisted software changes.
+Purpose: prevent context drift, truncation, uncontrolled scope, false PASS decisions, unsafe tenant rollout, uncontrolled identity/contact-data use, and unverified AI-assisted software changes.
 
 This package is foundation/control-system only. It does not authorise app-code changes, Supabase changes, RLS changes, deployments, n8n flows, customer-data access, auto-fixes, auto-merges, CI activation, or releases.
 
@@ -25,21 +25,23 @@ Process architecture is defined through:
 
 ## Prompt and context-control structure
 
-Prompt engineering is now treated as a managed process, not a loose prompt template. The prompt/context-control layer includes:
+Prompt engineering is treated as a managed process, not a loose prompt template. The prompt/context-control layer includes source basis, context pack, current job card, tool routing, forbidden prompt patterns, secret/customer-data boundaries, verification, rollback, stop conditions, and prompt-to-job-card linkage.
 
-- PROMPT_CONTROL_PROCEDURE
-- PROMPT_REGISTER
-- PROMPT_QUALITY_CHECKLIST
-- PROMPT_FAILURE_REGISTER
-- PROMPT_REVISION_CONTROL
-- FORBIDDEN_PROMPT_PATTERNS
-- APPROVED_PROMPT_LIBRARY
-- CONTEXT_PACK_STANDARD
-- SOURCE_OF_TRUTH_LOCK_PROCEDURE
-- NO_TRUNCATION_WORK_INSTRUCTION
-- TOOL_SPECIFIC_PROMPT_INSTRUCTIONS
+## Identity and contact-data control
 
-These controls enforce source basis, context pack, current job card, tool routing, forbidden prompt patterns, secret/customer-data boundaries, verification, rollback, stop conditions, and prompt-to-job-card linkage.
+Real emails and contact identities are controlled by:
+
+- IDENTITY_CONTACT_DATA_CONTROL
+- APPROVED_CONTACT_REGISTER
+- check_identity_contact_data.py
+
+Rules:
+
+- SNAGG emails must not be inserted generically.
+- `khan.angus@snagg.org` is not globally approved and may only be used for project-specific approved purposes.
+- Other SNAGG emails require explicit direction and register approval.
+- Placeholders must be used for examples where real contact data is not approved.
+- No email address may be used as role, permission, admin, tenant, auth, access or security decision logic.
 
 ## App-development control coverage
 
@@ -59,6 +61,7 @@ The management-system layer covers:
 - controlled skills/methods
 - process knowledge reuse
 - prompt engineering and context control
+- identity/contact-data control
 - verification and validation/UAT
 - tenant rollout and release
 - rollback
