@@ -1,14 +1,14 @@
 {
   "status": "PASS",
   "mode": "control-pack",
-  "job_card": "SBC-JC-0006D-1",
+  "job_card": "SBC-JC-0006E",
   "required_artifacts": {
     "status": "PASS",
-    "summary": "64/64 required files present; 12/12 required directories present."
+    "summary": "78/78 required files present; 12/12 required directories present."
   },
   "template_fields": {
     "status": "PASS",
-    "summary": "All required template fields present, including identity/contact-data files."
+    "summary": "All required template fields present, including AI-management files."
   },
   "process_architecture": {
     "status": "PASS",
@@ -37,6 +37,30 @@
       "active_or_global_approval": false,
       "rule": "Project-specific approval required before active use."
     }
+  },
+  "ai_management_controls": {
+    "status": "PASS",
+    "summary": "13/13 AI management artefacts present with required control terms.",
+    "ai_files": [
+      "AI_USE_POLICY.md",
+      "AI_SYSTEM_INVENTORY.md",
+      "AI_RISK_REGISTER.md",
+      "AI_IMPACT_ASSESSMENT.md",
+      "AI_OUTPUT_VERIFICATION_PROCEDURE.md",
+      "HUMAN_OVERSIGHT_MATRIX.md",
+      "AI_DATA_GOVERNANCE.md",
+      "AI_TOOL_PROVIDER_REVIEW.md",
+      "AI_LIFECYCLE_CONTROL.md",
+      "AI_BAD_OUTPUT_MONITORING_REGISTER.md",
+      "AI_MODEL_TOOL_CHANGE_CONTROL.md",
+      "AI_CREDIT_BURN_REGISTER.md",
+      "AI_TRACEABILITY_REGISTER.md"
+    ],
+    "iso_iec_42001_style_alignment_only": true,
+    "compliance_claimed": false,
+    "automatic_release_allowed": false,
+    "automatic_schema_rls_changes_allowed": false,
+    "ai_generated_pass_without_evidence_allowed": false
   },
   "secret_risk": {
     "status": "PASS",
