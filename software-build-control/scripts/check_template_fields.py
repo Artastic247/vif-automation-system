@@ -11,6 +11,8 @@ COMMON_PROMPT_FIELDS=[
     'Linked process','Linked gate','Records','PDCA','PASS/HOLD/BLOCKED rules','Update trigger'
 ]
 PROCESS_FIELDS=['Process ID','Process name','Owner','Inputs','Activities','Outputs','Records','KPI','Risk','Controls','Gate','PDCA']
+IDENTITY_FIELDS=['approved identity/contact-data use','prohibited identity/contact-data use','project-specific contact approval rule','SNAGG email usage rule','khan.angus@snagg.org usage rule','test/demo email rule','production email rule','role/security logic rule','evidence required']
+CONTACT_FIELDS=['Contact ID','Email/contact value','Organisation','Approved project/app','Approved purpose','Allowed artefacts','Prohibited use','Owner','Approval evidence','Review date','Status']
 
 REQ={
     'templates/CURRENT_JOB_CARD.md':['Objective','Scope in','Scope out','Inputs','Outputs','Tools allowed','Tools prohibited','Verification','Rollback','Stop condition','Gate decision'],
@@ -42,15 +44,17 @@ REQ={
     'management-system/PROCESS_GATE_MATRIX.md':COMMON_MANAGEMENT_FIELDS + ['Primary gate','Entry evidence','PASS condition','HOLD condition','BLOCKED condition','Required records'],
     'management-system/PROMPT_CONTROL_PROCEDURE.md':COMMON_PROMPT_FIELDS + ['approved job card','prompt-to-job-card','tool routing','secret-safety','customer-data'],
     'management-system/PROMPT_REGISTER.md':COMMON_PROMPT_FIELDS + ['Prompt ID','Tool/model','Approved use','Prohibited use','Version','Status'],
-    'management-system/PROMPT_QUALITY_CHECKLIST.md':COMMON_PROMPT_FIELDS + ['objective','source basis','mode','scope in','scope out','prohibited changes','evidence required','verification method','rollback route','stop condition'],
+    'management-system/PROMPT_QUALITY_CHECKLIST.md':COMMON_PROMPT_FIELDS + ['objective','source basis','mode','scope in','scope out','prohibited changes','evidence required','verification method','rollback route','stop condition','Contact-data boundary','SNAGG email control check'],
     'management-system/PROMPT_FAILURE_REGISTER.md':COMMON_PROMPT_FIELDS + ['Failure ID','tool/model','failure type','drift observed','root cause','corrective action','effectiveness check'],
     'management-system/PROMPT_REVISION_CONTROL.md':COMMON_PROMPT_FIELDS + ['Version','Status','Change reason','Approval decision','Retired/replaced by'],
     'management-system/FORBIDDEN_PROMPT_PATTERNS.md':COMMON_PROMPT_FIELDS + ['fix everything','make it work','complete the backend','build all features','continue from previous chat','change schema/RLS','apply to all tenants'],
     'management-system/APPROVED_PROMPT_LIBRARY.md':COMMON_PROMPT_FIELDS + ['architecture-review','repo-inspection','patch-build','verification','release-rollout','automation-boundary'],
-    'management-system/CONTEXT_PACK_STANDARD.md':COMMON_PROMPT_FIELDS + ['app identity','repo','branch/version','current job card','current gate','known defects','tenant/environment context','rollback context','no-truncation rule'],
+    'management-system/CONTEXT_PACK_STANDARD.md':COMMON_PROMPT_FIELDS + ['app identity','repo','branch/version','current job card','current gate','known defects','tenant/environment context','rollback context','approved project contacts','prohibited contact use','email/contact placeholders','contact-data evidence rule','no-truncation rule'],
     'management-system/SOURCE_OF_TRUTH_LOCK_PROCEDURE.md':COMMON_PROMPT_FIELDS + ['repo','branch','version','uploaded files','stale','source-of-truth lock'],
     'management-system/NO_TRUNCATION_WORK_INSTRUCTION.md':COMMON_PROMPT_FIELDS + ['stable artefacts','carry forward decisions','stale context','summarise without losing','release-critical details'],
-    'management-system/TOOL_SPECIFIC_PROMPT_INSTRUCTIONS.md':COMMON_PROMPT_FIELDS + ['ChatGPT architecture/review','Lovable plan-mode','Lovable build/repair','Codex repo-inspection','Codex patch','Claude/Claude Code','Gemini/local LLM','Copilot inline-assist','n8n prompt/automation']
+    'management-system/TOOL_SPECIFIC_PROMPT_INSTRUCTIONS.md':COMMON_PROMPT_FIELDS + ['ChatGPT architecture/review','Lovable plan-mode','Lovable build/repair','Codex repo-inspection','Codex patch','Claude/Claude Code','Gemini/local LLM','Copilot inline-assist','n8n prompt/automation','Never invent company emails','Never insert SNAGG emails','email addresses as role'],
+    'management-system/IDENTITY_CONTACT_DATA_CONTROL.md':COMMON_PROMPT_FIELDS + IDENTITY_FIELDS,
+    'management-system/APPROVED_CONTACT_REGISTER.md':COMMON_PROMPT_FIELDS + CONTACT_FIELDS
 }
 
 def run_check(root:Path):
@@ -64,7 +68,7 @@ def run_check(root:Path):
     return {
         'check':'template_fields',
         'status':'PASS' if not findings else 'BLOCKED',
-        'summary':'All required template fields present, including process architecture, PDCA and prompt/context-control files.' if not findings else f'{len(findings)} template issue(s).',
+        'summary':'All required template fields present, including process, prompt/context, and identity/contact-data files.' if not findings else f'{len(findings)} template issue(s).',
         'findings':findings
     }
 
