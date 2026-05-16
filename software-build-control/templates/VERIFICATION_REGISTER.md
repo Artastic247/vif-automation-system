@@ -1,9 +1,4 @@
-# VERIFICATION_REGISTER
+# VERIFICATION_REGISTER.md
 
-## Purpose
-Record objective evidence.
-
-| Check ID | Linked job card | Command/manual check | Expected result | Actual result | Evidence link/path | Status | Date | Reviewer |
+| Check ID | Linked job card | Command/manual check | Expected result | Actual result | Evidence | Status | Date | Reviewer |
 |---|---|---|---|---|---|---|---|---|
-
-Status: PASS / HOLD / BLOCKED

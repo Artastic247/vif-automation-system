@@ -3,7 +3,7 @@
 - [ ] Linked approved job card
 - [ ] Scope matches job card
 - [ ] No unrelated feature expansion
-- [ ] No .env/secrets committed
+- [ ] No `.env`/secrets committed
 - [ ] Build run
 - [ ] Lint run
 - [ ] Tests run

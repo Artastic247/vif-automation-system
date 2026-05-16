@@ -1,10 +1,7 @@
-# CHANGE_BACKLOG
+# CHANGE_BACKLOG.md
 
 ## Purpose
-Hold ideas/extras without contaminating active builds.
+Hold extras outside active build.
 
-| ID | Source | Description | Value | Risk | Priority | Status | Target release | Decision |
-|---|---|---|---|---|---|---|---|---|
-
-## Gate controlled
-Scope-control gate.
+| ID | Source | Description | Value | Risk | Status | Target release | Decision |
+|---|---|---|---|---|---|---|---|

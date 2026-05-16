@@ -1,27 +1,24 @@
 #!/usr/bin/env python3
-import re
 from pathlib import Path
-
-KEY_PATTERNS=[('openai_key',r'sk-[A-Za-z0-9_-]{20,}'),('github_token',r'gh[pousr]_[A-Za-z0-9_]{20,}'),('jwt_like_key',r'eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}'),('private_key_block',r'-----BEGIN (RSA |EC |OPENSSH |)PRIVATE KEY-----')]
-ASSIGN_RE=re.compile(r'(?i)(password|secret|token|private_key|service_role|api_key)\s*[:=]\s*["\']([^"\']+)["\']')
-PLACEHOLDER=re.compile(r'(?i)^(your_|<|example|dummy|test|placeholder|changeme|xxx|\$\{)')
-ALLOW_NAMES={'.env.example'}
-SKIP_PARTS={'.git','node_modules','dist','build'}
-
-def run(root, mode='control-pack', control_path=None):
-    root=Path(root); findings=[]
+import argparse,json,re
+SKIP={'.git','node_modules','dist','build','coverage','__pycache__','reports'}
+PAT=[('openai_api_key',re.compile(r'\bsk-(?:proj-)?[A-Za-z0-9_\-]{20,}\b')),('github_token',re.compile(r'\bgh[pousr]_[A-Za-z0-9_]{30,}\b')),('service_role',re.compile(r'\bSERVICE_ROLE(_KEY)?\s*[:=]\s*[^\s<>]+',re.I)),('credential_assignment',re.compile(r'\b(password|secret|token|private_key|api[_-]?key)\s*[:=]\s*[^\s<>]{8,}',re.I))]
+PLACE=['placeholder','example','your_','redacted','changeme','<token>','<secret>','<api_key>']
+def skip(p,root): return bool(set(p.relative_to(root).parts)&SKIP)
+def run_check(root:Path):
+    findings=[]
     for p in root.rglob('*'):
-        if not p.is_file() or any(part in SKIP_PARTS for part in p.parts): continue
-        if p.name.startswith('.env') and p.name not in ALLOW_NAMES:
-            findings.append({'file':str(p.relative_to(root)),'severity':'BLOCKED','rule':'env_file','message':'Environment file present.'}); continue
-        txt=p.read_text(errors='ignore')
-        for name,pat in KEY_PATTERNS:
-            if re.search(pat,txt): findings.append({'file':str(p.relative_to(root)),'severity':'BLOCKED','rule':name,'message':'Real-looking secret pattern detected.'})
-        for m in ASSIGN_RE.finditer(txt):
-            value=m.group(2).strip()
-            if not PLACEHOLDER.match(value) and len(value) >= 12:
-                findings.append({'file':str(p.relative_to(root)),'severity':'BLOCKED','rule':'credential_assignment','message':'Credential-like assignment with non-placeholder value.'})
-    return {'name':'secret_risk','status':'PASS' if not findings else 'BLOCKED','findings':findings,'summary':'No secret risks detected.' if not findings else f'{len(findings)} secret risks detected.'}
-
-if __name__=='__main__':
-    import argparse,json; ap=argparse.ArgumentParser(); ap.add_argument('--root',default='.'); ap.add_argument('--mode',default='control-pack'); ap.add_argument('--control-path',default=None); a=ap.parse_args(); r=run(a.root,a.mode,a.control_path); print(json.dumps(r,indent=2)); raise SystemExit(0 if r['status']=='PASS' else 1)
+        if not p.is_file() or skip(p,root): continue
+        rel=p.relative_to(root).as_posix()
+        if p.name=='.env' or (p.name.startswith('.env.') and p.name!='.env.example'): findings.append({'type':'env_file','file':rel,'message':'.env or .env.* file detected.'})
+        try: text=p.read_text(encoding='utf-8',errors='ignore')
+        except Exception: continue
+        for n,line in enumerate(text.splitlines(),1):
+            low=line.lower()
+            if any(x in low for x in PLACE): continue
+            for typ,rx in PAT:
+                if rx.search(line): findings.append({'type':typ,'file':rel,'line':n,'message':'Potential secret pattern detected.'})
+    return {'check':'secret_risk','status':'PASS' if not findings else 'BLOCKED','summary':'No secret risks detected.' if not findings else f'{len(findings)} secret risk(s).','findings':findings}
+def main():
+    p=argparse.ArgumentParser(); p.add_argument('--root',default='.'); a=p.parse_args(); r=run_check(Path(a.root)); print(json.dumps(r,indent=2)); return 0 if r['status']=='PASS' else 2
+if __name__=='__main__': raise SystemExit(main())

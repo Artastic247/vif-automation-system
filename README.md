@@ -2,4 +2,4 @@
 
 Initial repository anchor for the Software Build Control System.
 
-The control-system package will be stored under `software-build-control/`.
+The control-system package is stored under `software-build-control/`.

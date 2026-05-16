@@ -1,11 +1,13 @@
-# TOOL_ROUTING_MATRIX
+# Tool Routing Matrix
 
-Use the minimum effective tool.
-
-| Task | Tool | Output | Stop condition |
+| Tool | Correct use | Prohibited use | Stop condition |
 |---|---|---|---|
-| Context/gate review | ChatGPT | Decision/artefact | Missing evidence |
-| Repo inspection | Codex/GitHub | File evidence | Access missing |
-| UI build | Lovable | Scoped UI | Scope expands |
-| Backend proof | Supabase/Codex | RLS/read-write evidence | Security unknown |
-| Automation routing | n8n | Notifications/issues | Attempts coding/release |
+| ChatGPT | Strategy, gates, artefacts | Unapproved coding | Missing evidence |
+| Codex | Repo inspection, bounded patches | Broad redesign | Scope drift/failing tests |
+| Claude/Claude Code | Long-context review | Unbounded rewrite | Touches unrelated modules |
+| Lovable | Scoped UI/prototype station | Backend/RLS authority | Expands features |
+| GitHub | Version control, issues, PRs | Secrets/direct prod changes | Unreviewed main push |
+| Supabase | DB/RLS evidence | Untested destructive changes | RLS/data risk |
+| n8n | Routing/evidence orchestration | Auto-fix/release | Destructive action |
+| Gemini/local LLM | Second opinion | Source-of-truth authority | Unsupported claims |
+| Copilot | Inline completion | Architecture/schema/release | Out-of-scope changes |

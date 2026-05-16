@@ -1,35 +1,26 @@
 name: Job card
 body:
-  - type: textarea
+  - type: input
     id: objective
-    attributes: {label: Objective}
+    attributes:
+      label: Objective
   - type: textarea
-    id: app_module
-    attributes: {label: App/module}
+    id: scope_in
+    attributes:
+      label: Scope in
   - type: textarea
-    id: expected
-    attributes: {label: Expected behaviour}
-  - type: textarea
-    id: actual
-    attributes: {label: Actual behaviour}
+    id: scope_out
+    attributes:
+      label: Scope out / prohibited changes
   - type: textarea
     id: evidence
-    attributes: {label: Evidence}
-  - type: input
-    id: branch_version
-    attributes: {label: Branch/version}
-  - type: input
-    id: environment
-    attributes: {label: Environment}
-  - type: textarea
-    id: scope
-    attributes: {label: Scope in/out}
-  - type: textarea
-    id: prohibited
-    attributes: {label: Prohibited changes}
+    attributes:
+      label: Evidence and inputs
   - type: textarea
     id: verification
-    attributes: {label: Verification required}
+    attributes:
+      label: Verification required
   - type: textarea
     id: rollback
-    attributes: {label: Rollback route}
+    attributes:
+      label: Rollback route

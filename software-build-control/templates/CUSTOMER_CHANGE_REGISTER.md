@@ -1,10 +1,4 @@
-# CUSTOMER_CHANGE_REGISTER
+# CUSTOMER_CHANGE_REGISTER.md
 
-## Purpose
-Control customer-originated changes.
-
-| CR ID | Customer | Request | Classification | Impact | Commercial status | Approval | UAT evidence | Release | Closure |
-|---|---|---|---|---|---|---|---|---|---|
-
-## Gate decision
-PASS / HOLD / BLOCKED
+| CR ID | Customer | Request | Classification | Impact | Approval | UAT requirement | Rollout | Closure |
+|---|---|---|---|---|---|---|---|---|

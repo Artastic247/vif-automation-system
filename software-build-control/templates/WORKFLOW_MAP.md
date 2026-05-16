@@ -1,22 +1,8 @@
-# WORKFLOW_MAP
+# WORKFLOW_MAP.md
 
 ## Purpose
-Define process flow, actors, states, and exceptions.
+Define workflow before implementation.
 
 ## Required fields
-- Workflow name
-- Actor
-- Trigger
-- Start state
-- Action
-- End state
-- Protected action?
-- Exception handling
-- Approval/handoff
-- Audit/evidence record
-
-## Gate controlled
-Workflow gate.
-
-## Gate decision
-PASS / HOLD / BLOCKED
+| Workflow | Actor | Trigger | Start state | Action | End state | Protected | Approval | Evidence |
+|---|---|---|---|---|---|---|---|---|

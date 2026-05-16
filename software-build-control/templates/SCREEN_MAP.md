@@ -1,4 +1,4 @@
-# SCREEN_MAP
+# SCREEN_MAP.md
 
 ## Purpose
 Control visual/layout completeness before UI build.
@@ -12,10 +12,4 @@ Control visual/layout completeness before UI build.
 - Modals/drawers
 - Badges/states
 - Empty/loading/error states
-- Responsive notes
-
-## Gate controlled
-Screen/layout gate.
-
-## Gate decision
-PASS / HOLD / BLOCKED
+- Gate decision

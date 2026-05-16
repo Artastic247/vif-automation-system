@@ -1,21 +1,14 @@
-# RUNTIME_MAP
+# RUNTIME_MAP.md
 
 ## Purpose
-Map UI/workflow to real runtime objects and backend proof.
+Map runtime object, state, action, backend proof, and evidence.
 
 ## Required fields
 - Runtime object
 - State model
 - Allowed actions
 - Protected actions
-- Database table/RPC/function
-- RLS/security rule
-- Backend read proof
-- Backend write proof
+- Backend read/write proof
+- RLS/auth rule
 - Audit/evidence record
-
-## Gate controlled
-Runtime/backend gate.
-
-## Gate decision
-PASS / HOLD / BLOCKED
+- Gate decision

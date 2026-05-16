@@ -1,6 +1,6 @@
-# DO_NOT_REPEAT_RULES
+# Do Not Repeat Rules
 
-- No "fix everything" prompt.
+- No fix-everything prompt.
 - No app-code change without job card.
 - No schema/RLS change without runtime map.
 - No UI build without screen map.
@@ -10,5 +10,3 @@
 - No demo data as production proof.
 - No frontend-only security claim.
 - No automation before manual control is proven.
-- No backend claim without backend read/write proof.
-- No module complete because it has only a route, page, table, chart, or mock data.

@@ -1,4 +1,4 @@
-# CURRENT_JOB_CARD
+# CURRENT_JOB_CARD.md
 
 ## Job Card ID
 
@@ -20,7 +20,7 @@
 
 ## Tools prohibited
 
-## Verification required
+## Verification
 
 ## Rollback
 

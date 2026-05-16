@@ -1,7 +1,0 @@
-name: Template Build Check
-on: workflow_dispatch
-jobs:
-  template:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo 'Template only. Insert project-specific commands under approved job card.'

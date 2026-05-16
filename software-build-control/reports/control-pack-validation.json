@@ -1,1 +1,5 @@
-{"overall_status":"PASS","gate_decision":"PASS","mode":"control-pack","counts_by_status":{"PASS":6,"PASS_WITH_WARNINGS":0,"HOLD":0,"BLOCKED":0},"recommended_next_action":"Proceed to controlled review/next approved gate."}
+{
+  "status": "PASS",
+  "mode": "control-pack",
+  "note": "Generated locally before clean remote push. Remote workflows remain inactive templates."
+}

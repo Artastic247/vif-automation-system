@@ -1,10 +1,4 @@
-# RELEASE_REGISTER
+# RELEASE_REGISTER.md
 
-## Purpose
-Control releases and rollback.
-
-| Release ID | Version | Commit | Environment | Tenants affected | Feature exposure | Verification evidence | Rollback route | Decision | Approver |
-|---|---|---|---|---|---|---|---|---|---|
-
-## Gate decision
-PASS / HOLD / BLOCKED
+| Version | Commit | Environment | Deployment | Tenants affected | Verification evidence | Rollback route | Release decision | Approver |
+|---|---|---|---|---|---|---|---|---|

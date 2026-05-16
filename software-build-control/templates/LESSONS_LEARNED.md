@@ -1,4 +1,4 @@
-# LESSONS_LEARNED
+# LESSONS_LEARNED.md
 
-| ID | Date | App | Event | Cause | Effect | Fix | Prevention rule | Artefact updated | Regression test needed |
-|---|---|---|---|---|---|---|---|---|---|
+| ID | Event | Cause | Effect | Prevention rule | Artefact updated | Regression needed |
+|---|---|---|---|---|---|---|

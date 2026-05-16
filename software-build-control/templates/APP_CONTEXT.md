@@ -1,25 +1,17 @@
-# APP_CONTEXT
+# APP_CONTEXT.md
 
 ## Purpose
-Lock app identity and source of truth.
-
-## When to use
-Before any review, fix, build, release, or rollout.
+Preserve app context before work starts.
 
 ## Required fields
 - App name
-- Purpose
+- Goal
 - Users
 - Stack
-- Repo
-- Branch/version
 - Environment
-- Tenants
+- Repo/branch/version
 - Constraints
+- Evidence supplied
+- Evidence missing
 - What must not change
-
-## Gate controlled
-Context lock.
-
-## Gate decision
-PASS / HOLD / BLOCKED
+- Gate decision
