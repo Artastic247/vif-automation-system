@@ -1,6 +1,36 @@
 {
   "name": "software-build-control",
-  "status": "automation-mvp-clean-remote-baseline",
+  "status": "app-development-management-system-gap-closed",
   "scope": "control-system-only",
-  "safe_boundaries": ["read-only validation", "reports-only writes", "no app code", "no Supabase/RLS", "no deployment", "no n8n", "no customer data"]
+  "latest_job_card": "SBC-JC-0006B",
+  "safe_boundaries": [
+    "read-only validation",
+    "reports-only writes",
+    "no app code",
+    "no Supabase/RLS",
+    "no deployment",
+    "no n8n",
+    "no customer data",
+    "no CI activation without approved job card"
+  ],
+  "management_system_coverage": [
+    "app intake",
+    "UI/interface design",
+    "database/backend/RLS setup",
+    "environment and tenant setup",
+    "gate checklists",
+    "workflow/BPM",
+    "process knowledge",
+    "agents as workers",
+    "skills as controlled methods",
+    "verification",
+    "validation/UAT",
+    "release",
+    "rollback",
+    "support/maintenance",
+    "problem solving",
+    "lessons learned",
+    "automation readiness",
+    "contingency planning"
+  ]
 }
