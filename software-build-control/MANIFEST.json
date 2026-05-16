@@ -1,8 +1,8 @@
 {
   "name": "software-build-control",
-  "status": "prompt-engineering-and-context-control-added",
+  "status": "identity-and-contact-data-control-added",
   "scope": "control-system-only",
-  "latest_job_card": "SBC-JC-0006D",
+  "latest_job_card": "SBC-JC-0006D-1",
   "safe_boundaries": [
     "read-only validation",
     "reports-only writes",
@@ -35,6 +35,15 @@
     "no_truncation_work_instruction": true,
     "tool_specific_prompt_instructions": true
   },
+  "identity_contact_data_controls": {
+    "total_files": 3,
+    "identity_contact_data_control": true,
+    "approved_contact_register": true,
+    "identity_contact_data_scanner": true,
+    "snagg_email_generic_use_allowed": false,
+    "email_based_role_security_logic_allowed": false,
+    "khan_angus_snagg_status": "HOLD — project-specific approval required before active use"
+  },
   "management_system_coverage": [
     "process approach",
     "explicit PDCA per process",
@@ -49,6 +58,9 @@
     "source-of-truth lock",
     "no-truncation work instruction",
     "tool-specific prompt control",
+    "identity and contact-data control",
+    "approved contact register",
+    "contact-data validation scanner",
     "prompt failure and revision control",
     "forbidden prompt patterns",
     "app intake",
