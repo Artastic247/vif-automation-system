@@ -1,3 +1,9 @@
 # Software Build Control System
 
-Clause 9 / MLA module added. MLA is under performance evaluation. Audit is risk-based and maturity-based. GitHub CI pilot is manual/read-only/control-system-only. App-repo CI remains HOLD. n8n remains HOLD. Auto-fix, auto-merge and auto-release remain BLOCKED. Clause 10 RCA/CAPA is still pending. App onboarding is HOLD.
+Clause 9 / MLA validation alignment completed.
+Clause 10 Batch 10A added controlled nonconformity, RCA, CAPA, escalation and effectiveness-review controls.
+GitHub CI pilot remains manual/read-only/control-system-only.
+App-repo CI remains HOLD.
+n8n remains HOLD.
+Auto-fix, auto-merge and auto-release remain BLOCKED.
+App onboarding remains HOLD.
