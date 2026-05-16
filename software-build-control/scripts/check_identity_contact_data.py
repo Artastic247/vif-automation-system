@@ -36,16 +36,16 @@ def load_register(root:Path):
 def classify(email,rel,line,approved):
     lower=email.lower()
     line_lower=line.lower()
-    near_security=any(term in line_lower for term in SECURITY_TERMS)
     is_placeholder=lower.endswith(PLACEHOLDER_DOMAINS)
     in_register=lower in approved
     in_control=rel in CONTROL_FILES
     is_snagg=lower.endswith(SNAGG_DOMAIN)
+    near_security=any(term in line_lower for term in SECURITY_TERMS)
 
-    if near_security and not in_control:
-        return 'BLOCKED','Email appears near role/security/access terms outside approved control files.'
     if is_placeholder:
         return 'PASS','Placeholder/example email.'
+    if near_security and not in_control:
+        return 'BLOCKED','Email appears near role/security/access terms outside approved control files.'
     if in_register:
         status=approved[lower].get('status','UNKNOWN')
         if status=='BLOCKED':
