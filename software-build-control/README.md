@@ -2,14 +2,34 @@
 
 Purpose: prevent context drift, truncation, uncontrolled scope, false PASS decisions, unsafe tenant rollout, and unverified AI-assisted software changes.
 
-This package is foundation/control-system only. It does not authorise app-code changes, Supabase changes, RLS changes, deployments, n8n flows, customer-data access, auto-fixes, auto-merges, or releases.
+This package is foundation/control-system only. It does not authorise app-code changes, Supabase changes, RLS changes, deployments, n8n flows, customer-data access, auto-fixes, auto-merges, CI activation, or releases.
+
+## Process-led management-system structure
+
+The system is now process-led, not document-led. Documents, scripts, prompts, workers, skills and templates are controlled resources/records of processes.
+
+Process architecture is defined through:
+
+- MOP — management-oriented processes
+- COP — core operational app-development processes
+- SOP — support-oriented processes
+- process register
+- process interaction map
+- explicit PDCA per process
+- turtle diagram template
+- owner matrix
+- KPI register
+- risk/control register
+- records matrix
+- gate matrix
 
 ## App-development control coverage
 
-The management-system layer now covers:
+The management-system layer covers:
 
 - app intake
 - context lock and source-of-truth lock
+- requirements and acceptance criteria
 - UI/interface design control
 - data table/grid definition
 - workflow/runtime mapping
