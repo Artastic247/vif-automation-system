@@ -1,5 +1,55 @@
 {
   "status": "PASS",
   "mode": "control-pack",
-  "note": "Generated locally before clean remote push. Remote workflows remain inactive templates."
+  "job_card": "SBC-JC-0006B",
+  "required_artifacts": {
+    "status": "PASS",
+    "summary": "38/38 required files present; 12/12 required directories present."
+  },
+  "template_fields": {
+    "status": "PASS",
+    "summary": "All required template fields present, including app-development management-system files."
+  },
+  "secret_risk": {
+    "status": "PASS",
+    "summary": "No secret risks detected."
+  },
+  "large_files": {
+    "status": "PASS",
+    "summary": "No large-file warnings detected."
+  },
+  "forbidden_patterns": {
+    "status": "PASS",
+    "summary": "No forbidden-pattern findings detected."
+  },
+  "evidence_completeness": {
+    "status": "PASS",
+    "summary": "Evidence completeness checks passed."
+  },
+  "management_system_coverage": [
+    "contingency planning",
+    "app intake",
+    "UI/interface control",
+    "database/backend/RLS control",
+    "gate checklists",
+    "agents as workers",
+    "skills as controlled methods",
+    "process knowledge control",
+    "design/development lifecycle control",
+    "change control",
+    "app maintenance/support",
+    "workflow/BPM catalogue"
+  ],
+  "safe_boundaries": {
+    "app_repo_modified": false,
+    "supabase_modified": false,
+    "rls_modified": false,
+    "deployment_modified": false,
+    "customer_data_accessed": false,
+    "n8n_implemented": false,
+    "ci_activated": false,
+    "auto_fix": false,
+    "auto_merge": false,
+    "release_action": false
+  }
 }
