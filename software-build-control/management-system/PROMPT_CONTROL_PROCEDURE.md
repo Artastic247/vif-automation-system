@@ -9,6 +9,9 @@ Applies to ChatGPT, Lovable, Codex, Claude/Claude Code, Gemini/local LLMs, Copil
 ## Process owner
 Prompt Quality Reviewer owns the procedure. VIF Orchestrator approves prompt route and gate fit. QA Gatekeeper verifies evidence before PASS.
 
+## Owner/tool
+Prompt Quality Reviewer owns prompt quality. VIF Orchestrator controls tool routing and job-card linkage. QA Gatekeeper controls evidence and verification readiness. Specialist workers apply tool-specific prompt instructions.
+
 ## Inputs
 - Current APP_CONTEXT or CONTEXT_PACK_STANDARD record.
 - Approved CURRENT_JOB_CARD where implementation, repair, build, schema/RLS, release, rollout, or automation work is requested.
@@ -29,6 +32,16 @@ Prompt Quality Reviewer owns the procedure. VIF Orchestrator approves prompt rou
 10. Review AI output against job card and evidence.
 11. Log failures in PROMPT_FAILURE_REGISTER and link to lessons learned, RCA, skills, agents, tool routing and process updates.
 
+## Prompt-to-job-card linkage rules
+- No implementation prompt without approved job card.
+- No build prompt without scope in/out.
+- No repair prompt without defect evidence.
+- No schema/RLS prompt without runtime/database gate.
+- No release prompt without verification and rollback evidence.
+- No tenant rollout prompt without tenant rollout register.
+- No automation prompt without automation-readiness gate.
+- No prompt may override the current gate decision.
+
 ## Outputs
 - Approved prompt or rejected prompt decision.
 - Prompt register entry where reusable.
@@ -42,6 +55,9 @@ PROMPT_REGISTER, PROMPT_QUALITY_CHECKLIST, PROMPT_FAILURE_REGISTER, PROMPT_REVIS
 ## Linked process IDs
 SOP-06 Prompt control and prompt quality, COP-02 Source-of-truth and context lock, COP-09 Job card creation and approval, COP-10 Build/modification control, COP-11 Verification, COP-14 Release and rollback, MOP-04 AI governance and tool-use policy, MOP-07 Corrective action and continual improvement, SOP-12 Lessons learned and knowledge reuse.
 
+## Linked process
+SOP-06 Prompt control and prompt quality.
+
 ## Linked agents
 VIF Orchestrator, Prompt Quality Reviewer, QA Gatekeeper, Codex Repo Inspector, Lovable Builder, Claude Code Reviewer, GitHub Release Controller, Supabase Backend Reviewer, Security/RLS Reviewer, Lessons Learned Controller.
 
@@ -50,6 +66,9 @@ Context lock, scope lock, prompt quality review, evidence map, tool routing, run
 
 ## Linked gates
 Context gate, source-of-truth gate, job-card gate, prompt gate, tool-routing gate, build gate, DB/RLS gate, verification gate, release gate, tenant rollout gate, lessons-learned gate.
+
+## Linked gate
+Prompt gate.
 
 ## PDCA
 - PLAN: define prompt purpose, source basis, context pack, tool route, scope, prohibited actions, evidence, verification, rollback and stop condition.
