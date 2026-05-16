@@ -8,10 +8,15 @@ SECURITY_TERMS=['role','permission','admin','super_admin','auth','user','tenant'
 PLACEHOLDER_DOMAINS=('example.com','example.org','example.net','example.test')
 SNAGG_DOMAIN='@'+'snagg.org'
 KHAN_CONTACT='khan.angus'+SNAGG_DOMAIN
-CONTROL_FILES={
+CONTROL_REFERENCE_FILES={
+    'README.md',
     'management-system/IDENTITY_CONTACT_DATA_CONTROL.md',
     'management-system/APPROVED_CONTACT_REGISTER.md',
-    'scripts/check_identity_contact_data.py'
+    'management-system/PROMPT_QUALITY_CHECKLIST.md',
+    'management-system/CONTEXT_PACK_STANDARD.md',
+    'management-system/TOOL_SPECIFIC_PROMPT_INSTRUCTIONS.md',
+    'scripts/check_identity_contact_data.py',
+    'scripts/check_template_fields.py'
 }
 
 def skip(path:Path,root:Path)->bool:
@@ -38,27 +43,29 @@ def classify(email,rel,line,approved):
     line_lower=line.lower()
     is_placeholder=lower.endswith(PLACEHOLDER_DOMAINS)
     in_register=lower in approved
-    in_control=rel in CONTROL_FILES
+    in_control_reference=rel in CONTROL_REFERENCE_FILES
     is_snagg=lower.endswith(SNAGG_DOMAIN)
     near_security=any(term in line_lower for term in SECURITY_TERMS)
 
     if is_placeholder:
         return 'PASS','Placeholder/example email.'
-    if near_security and not in_control:
-        return 'BLOCKED','Email appears near role/security/access terms outside approved control files.'
+    if near_security and not in_control_reference:
+        return 'BLOCKED','Email appears near role/security/access terms outside approved control/reference files.'
     if in_register:
         status=approved[lower].get('status','UNKNOWN')
         if status=='BLOCKED':
             return 'BLOCKED','Contact is registered as blocked.'
         if status=='HOLD':
-            if in_control:
-                return 'PASS_WITH_WARNINGS','Contact is intentionally controlled as HOLD in policy/register; not approved for active use.'
-            return 'HOLD','Contact is registered as HOLD and requires project-specific approval.'
+            if in_control_reference:
+                return 'PASS_WITH_WARNINGS','Contact is intentionally controlled as HOLD in policy/register/reference text; not approved for active use.'
+            return 'HOLD','Contact is registered as HOLD and requires project-specific approval before active use.'
         return 'PASS',f'Contact register match with status {status}.'
     if is_snagg:
+        if in_control_reference:
+            return 'PASS_WITH_WARNINGS','SNAGG email appears only as controlled policy/reference text; register approval required before active use.'
         return 'HOLD','SNAGG email is not approved in the contact register.'
-    if in_control:
-        return 'PASS_WITH_WARNINGS','Real/unknown email appears only in identity/contact control artefact; review if active use is intended.'
+    if in_control_reference:
+        return 'PASS_WITH_WARNINGS','Real/unknown email appears only in controlled reference text; review before active use.'
     return 'HOLD','Unknown real email in generated/control files.'
 
 def run_check(root:Path):
