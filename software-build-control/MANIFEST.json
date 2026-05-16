@@ -1,8 +1,8 @@
 {
   "name": "software-build-control",
-  "status": "app-development-management-system-gap-closed",
+  "status": "process-architecture-and-pdca-mapping-added",
   "scope": "control-system-only",
-  "latest_job_card": "SBC-JC-0006B",
+  "latest_job_card": "SBC-JC-0006C",
   "safe_boundaries": [
     "read-only validation",
     "reports-only writes",
@@ -13,24 +13,46 @@
     "no customer data",
     "no CI activation without approved job card"
   ],
+  "process_architecture": {
+    "management_processes": 7,
+    "core_operational_processes": 16,
+    "support_processes": 12,
+    "total_processes": 35,
+    "pdca_explicit": true,
+    "process_families": ["MOP", "COP", "SOP"],
+    "process_files": [
+      "PROCESS_ARCHITECTURE.md",
+      "PROCESS_REGISTER.md",
+      "PROCESS_INTERACTION_MAP.md",
+      "PDCA_PROCESS_MODEL.md",
+      "PROCESS_TURTLE_TEMPLATE.md",
+      "PROCESS_OWNER_MATRIX.md",
+      "PROCESS_KPI_REGISTER.md",
+      "PROCESS_RISK_CONTROL_REGISTER.md",
+      "PROCESS_RECORDS_MATRIX.md",
+      "PROCESS_GATE_MATRIX.md"
+    ]
+  },
   "management_system_coverage": [
+    "process approach",
+    "explicit PDCA per process",
+    "process interaction mapping",
+    "process ownership",
+    "process KPIs",
+    "process risks and controls",
+    "process records and evidence",
+    "process gate linkage",
     "app intake",
     "UI/interface design",
     "database/backend/RLS setup",
     "environment and tenant setup",
-    "gate checklists",
-    "workflow/BPM",
-    "process knowledge",
     "agents as workers",
     "skills as controlled methods",
     "verification",
     "validation/UAT",
-    "release",
-    "rollback",
+    "release and rollback",
     "support/maintenance",
-    "problem solving",
     "lessons learned",
-    "automation readiness",
-    "contingency planning"
+    "automation readiness"
   ]
 }
