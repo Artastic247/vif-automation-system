@@ -10,9 +10,16 @@ COMMON_PROMPT_FIELDS=[
     'Purpose','Scope','Inputs','Activities','Outputs','Owner/tool',
     'Linked process','Linked gate','Records','PDCA','PASS/HOLD/BLOCKED rules','Update trigger'
 ]
+COMMON_AI_FIELDS=[
+    'Purpose','Scope','Owner/tool','Inputs','Activities/fields','Outputs/records',
+    'Linked process','Linked gate','Human approval','Data boundary','PASS/HOLD/BLOCKED rules','PDCA','Update trigger'
+]
 PROCESS_FIELDS=['Process ID','Process name','Owner','Inputs','Activities','Outputs','Records','KPI','Risk','Controls','Gate','PDCA']
 IDENTITY_FIELDS=['approved identity/contact-data use','prohibited identity/contact-data use','project-specific contact approval rule','SNAGG email usage rule','khan.angus@snagg.org usage rule','test/demo email rule','production email rule','role/security logic rule','evidence required']
 CONTACT_FIELDS=['Contact ID','Email/contact value','Organisation','Approved project/app','Approved purpose','Allowed artefacts','Prohibited use','Owner','Approval evidence','Review date','Status']
+AI_POLICY_FIELDS=['Allowed AI uses','Prohibited AI uses','no automatic release','no automatic RLS','no AI-generated PASS without evidence','no uncontrolled app-code changes','no invented emails']
+AI_INVENTORY_FIELDS=['tool/model name','provider','intended use','allowed tasks','prohibited tasks','data classification allowed','human oversight required','risk rating','review frequency']
+AI_RISK_FIELDS=['risk ID','cause','effect','severity','likelihood','detection','current control','required action','linked lesson learned']
 
 REQ={
     'templates/CURRENT_JOB_CARD.md':['Objective','Scope in','Scope out','Inputs','Outputs','Tools allowed','Tools prohibited','Verification','Rollback','Stop condition','Gate decision'],
@@ -54,7 +61,20 @@ REQ={
     'management-system/NO_TRUNCATION_WORK_INSTRUCTION.md':COMMON_PROMPT_FIELDS + ['stable artefacts','carry forward decisions','stale context','summarise without losing','release-critical details'],
     'management-system/TOOL_SPECIFIC_PROMPT_INSTRUCTIONS.md':COMMON_PROMPT_FIELDS + ['ChatGPT architecture/review','Lovable plan-mode','Lovable build/repair','Codex repo-inspection','Codex patch','Claude/Claude Code','Gemini/local LLM','Copilot inline-assist','n8n prompt/automation','Never invent company emails','Never insert SNAGG emails','email addresses as role'],
     'management-system/IDENTITY_CONTACT_DATA_CONTROL.md':COMMON_PROMPT_FIELDS + IDENTITY_FIELDS,
-    'management-system/APPROVED_CONTACT_REGISTER.md':COMMON_PROMPT_FIELDS + CONTACT_FIELDS
+    'management-system/APPROVED_CONTACT_REGISTER.md':COMMON_PROMPT_FIELDS + CONTACT_FIELDS,
+    'management-system/AI_USE_POLICY.md':COMMON_AI_FIELDS + AI_POLICY_FIELDS,
+    'management-system/AI_SYSTEM_INVENTORY.md':COMMON_AI_FIELDS + AI_INVENTORY_FIELDS,
+    'management-system/AI_RISK_REGISTER.md':COMMON_AI_FIELDS + AI_RISK_FIELDS,
+    'management-system/AI_IMPACT_ASSESSMENT.md':COMMON_AI_FIELDS + ['AI modifies app code','AI changes schema/RLS','AI affects tenant/customer data','AI supports release decision','AI automation is activated'],
+    'management-system/AI_OUTPUT_VERIFICATION_PROCEDURE.md':COMMON_AI_FIELDS + ['source basis check','evidence check','file/repo check','security/data check','role/tenant/RLS check','build/lint/test evidence'],
+    'management-system/HUMAN_OVERSIGHT_MATRIX.md':COMMON_AI_FIELDS + ['job card approval','app code change','schema/RLS change','customer-data use','tenant rollout','production release','n8n workflow activation'],
+    'management-system/AI_DATA_GOVERNANCE.md':COMMON_AI_FIELDS + ['public data','internal data','confidential data','customer data','credentials/secrets','production data','demo/synthetic data','masking/anonymisation'],
+    'management-system/AI_TOOL_PROVIDER_REVIEW.md':COMMON_AI_FIELDS + ['provider/tool','intended use','risk level','data allowed','known limitations','required controls'],
+    'management-system/AI_LIFECYCLE_CONTROL.md':COMMON_AI_FIELDS + ['Request','Context pack','Tool route','Prompt approval','AI output','Human review','Verification evidence','Decision','Lessons learned'],
+    'management-system/AI_BAD_OUTPUT_MONITORING_REGISTER.md':COMMON_AI_FIELDS + ['bad output ID','tool/model','prompt/input summary','failure type','effect','detection method','correction','corrective action','effectiveness check'],
+    'management-system/AI_MODEL_TOOL_CHANGE_CONTROL.md':COMMON_AI_FIELDS + ['model upgrade','tool behaviour change','provider outage','pricing/credit change','capability/risk reassessment','required validation'],
+    'management-system/AI_CREDIT_BURN_REGISTER.md':COMMON_AI_FIELDS + ['tool','task','credit/token/resource use','result achieved','failed attempts','rework caused','stop trigger','prevention action','preferred future route'],
+    'management-system/AI_TRACEABILITY_REGISTER.md':COMMON_AI_FIELDS + ['job card','prompt','tool/model','AI output','files/systems affected','evidence','human reviewer','decision','verification result','linked lesson learned']
 }
 
 def run_check(root:Path):
@@ -68,7 +88,7 @@ def run_check(root:Path):
     return {
         'check':'template_fields',
         'status':'PASS' if not findings else 'BLOCKED',
-        'summary':'All required template fields present, including process, prompt/context, and identity/contact-data files.' if not findings else f'{len(findings)} template issue(s).',
+        'summary':'All required template fields present, including process, prompt/context, identity/contact-data and AI-management files.' if not findings else f'{len(findings)} template issue(s).',
         'findings':findings
     }
 
