@@ -10,6 +10,7 @@ CHECKS=[
     'check_process_architecture.py',
     'check_prompt_context.py',
     'check_identity_contact_data.py',
+    'check_ai_management.py',
     'check_secret_risk.py',
     'check_large_files.py',
     'check_forbidden_patterns.py',
