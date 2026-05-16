@@ -1,14 +1,14 @@
 {
   "status": "PASS",
   "mode": "control-pack",
-  "job_card": "SBC-JC-0006D",
+  "job_card": "SBC-JC-0006D-1",
   "required_artifacts": {
     "status": "PASS",
-    "summary": "61/61 required files present; 12/12 required directories present."
+    "summary": "64/64 required files present; 12/12 required directories present."
   },
   "template_fields": {
     "status": "PASS",
-    "summary": "All required template fields present, including prompt/context-control files."
+    "summary": "All required template fields present, including identity/contact-data files."
   },
   "process_architecture": {
     "status": "PASS",
@@ -20,20 +20,23 @@
   },
   "prompt_context_controls": {
     "status": "PASS",
-    "summary": "11/11 prompt and context-control artefacts present with required control terms.",
-    "prompt_context_files": [
-      "PROMPT_CONTROL_PROCEDURE.md",
-      "PROMPT_REGISTER.md",
-      "PROMPT_QUALITY_CHECKLIST.md",
-      "PROMPT_FAILURE_REGISTER.md",
-      "PROMPT_REVISION_CONTROL.md",
-      "FORBIDDEN_PROMPT_PATTERNS.md",
-      "APPROVED_PROMPT_LIBRARY.md",
-      "CONTEXT_PACK_STANDARD.md",
-      "SOURCE_OF_TRUTH_LOCK_PROCEDURE.md",
-      "NO_TRUNCATION_WORK_INSTRUCTION.md",
-      "TOOL_SPECIFIC_PROMPT_INSTRUCTIONS.md"
-    ]
+    "summary": "11/11 prompt and context-control artefacts present with required control terms."
+  },
+  "identity_contact_data": {
+    "status": "PASS",
+    "summary": "12 email/contact occurrence(s) found; PASS=7, WARN=5, HOLD=0, BLOCKED=0.",
+    "classification_counts": {
+      "PASS": 7,
+      "PASS_WITH_WARNINGS": 5,
+      "HOLD": 0,
+      "BLOCKED": 0
+    },
+    "controlled_snagg_contact": {
+      "value": "khan.angus@snagg.org",
+      "status": "HOLD in APPROVED_CONTACT_REGISTER only",
+      "active_or_global_approval": false,
+      "rule": "Project-specific approval required before active use."
+    }
   },
   "secret_risk": {
     "status": "PASS",
