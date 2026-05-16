@@ -1,14 +1,22 @@
 {
   "status": "PASS",
   "mode": "control-pack",
-  "job_card": "SBC-JC-0006B",
+  "job_card": "SBC-JC-0006C",
   "required_artifacts": {
     "status": "PASS",
-    "summary": "38/38 required files present; 12/12 required directories present."
+    "summary": "49/49 required files present; 12/12 required directories present."
   },
   "template_fields": {
     "status": "PASS",
-    "summary": "All required template fields present, including app-development management-system files."
+    "summary": "All required template fields present, including process architecture and PDCA files."
+  },
+  "process_architecture": {
+    "status": "PASS",
+    "summary": "35/35 processes present with explicit process architecture and PDCA checks.",
+    "management_processes": 7,
+    "core_operational_processes": 16,
+    "support_processes": 12,
+    "total_processes": 35
   },
   "secret_risk": {
     "status": "PASS",
@@ -26,19 +34,17 @@
     "status": "PASS",
     "summary": "Evidence completeness checks passed."
   },
-  "management_system_coverage": [
-    "contingency planning",
-    "app intake",
-    "UI/interface control",
-    "database/backend/RLS control",
-    "gate checklists",
-    "agents as workers",
-    "skills as controlled methods",
-    "process knowledge control",
-    "design/development lifecycle control",
-    "change control",
-    "app maintenance/support",
-    "workflow/BPM catalogue"
+  "process_architecture_files": [
+    "PROCESS_ARCHITECTURE.md",
+    "PROCESS_REGISTER.md",
+    "PROCESS_INTERACTION_MAP.md",
+    "PDCA_PROCESS_MODEL.md",
+    "PROCESS_TURTLE_TEMPLATE.md",
+    "PROCESS_OWNER_MATRIX.md",
+    "PROCESS_KPI_REGISTER.md",
+    "PROCESS_RISK_CONTROL_REGISTER.md",
+    "PROCESS_RECORDS_MATRIX.md",
+    "PROCESS_GATE_MATRIX.md"
   ],
   "safe_boundaries": {
     "app_repo_modified": false,
