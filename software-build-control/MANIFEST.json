@@ -1,8 +1,8 @@
 {
   "name": "software-build-control",
-  "status": "process-architecture-and-pdca-mapping-added",
+  "status": "prompt-engineering-and-context-control-added",
   "scope": "control-system-only",
-  "latest_job_card": "SBC-JC-0006C",
+  "latest_job_card": "SBC-JC-0006D",
   "safe_boundaries": [
     "read-only validation",
     "reports-only writes",
@@ -19,19 +19,21 @@
     "support_processes": 12,
     "total_processes": 35,
     "pdca_explicit": true,
-    "process_families": ["MOP", "COP", "SOP"],
-    "process_files": [
-      "PROCESS_ARCHITECTURE.md",
-      "PROCESS_REGISTER.md",
-      "PROCESS_INTERACTION_MAP.md",
-      "PDCA_PROCESS_MODEL.md",
-      "PROCESS_TURTLE_TEMPLATE.md",
-      "PROCESS_OWNER_MATRIX.md",
-      "PROCESS_KPI_REGISTER.md",
-      "PROCESS_RISK_CONTROL_REGISTER.md",
-      "PROCESS_RECORDS_MATRIX.md",
-      "PROCESS_GATE_MATRIX.md"
-    ]
+    "process_families": ["MOP", "COP", "SOP"]
+  },
+  "prompt_context_controls": {
+    "total_files": 11,
+    "prompt_control_procedure": true,
+    "prompt_register": true,
+    "prompt_quality_checklist": true,
+    "prompt_failure_register": true,
+    "prompt_revision_control": true,
+    "forbidden_prompt_patterns": true,
+    "approved_prompt_library": true,
+    "context_pack_standard": true,
+    "source_of_truth_lock_procedure": true,
+    "no_truncation_work_instruction": true,
+    "tool_specific_prompt_instructions": true
   },
   "management_system_coverage": [
     "process approach",
@@ -42,6 +44,13 @@
     "process risks and controls",
     "process records and evidence",
     "process gate linkage",
+    "prompt engineering as managed process",
+    "context pack standard",
+    "source-of-truth lock",
+    "no-truncation work instruction",
+    "tool-specific prompt control",
+    "prompt failure and revision control",
+    "forbidden prompt patterns",
     "app intake",
     "UI/interface design",
     "database/backend/RLS setup",
