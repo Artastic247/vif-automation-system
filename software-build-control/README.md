@@ -1,6 +1,6 @@
 # Software Build Control System
 
-Purpose: prevent context drift, truncation, uncontrolled scope, false PASS decisions, unsafe tenant rollout, uncontrolled identity/contact-data use, and unverified AI-assisted software changes.
+Purpose: prevent context drift, truncation, uncontrolled scope, false PASS decisions, unsafe tenant rollout, uncontrolled identity/contact-data use, uncontrolled AI use, and unverified AI-assisted software changes.
 
 This package is foundation/control-system only. It does not authorise app-code changes, Supabase changes, RLS changes, deployments, n8n flows, customer-data access, auto-fixes, auto-merges, CI activation, or releases.
 
@@ -43,6 +43,36 @@ Rules:
 - Placeholders must be used for examples where real contact data is not approved.
 - No email address may be used as role, permission, admin, tenant, auth, access or security decision logic.
 
+## AI management-system controls
+
+AI use is controlled through:
+
+- AI_USE_POLICY
+- AI_SYSTEM_INVENTORY
+- AI_RISK_REGISTER
+- AI_IMPACT_ASSESSMENT
+- AI_OUTPUT_VERIFICATION_PROCEDURE
+- HUMAN_OVERSIGHT_MATRIX
+- AI_DATA_GOVERNANCE
+- AI_TOOL_PROVIDER_REVIEW
+- AI_LIFECYCLE_CONTROL
+- AI_BAD_OUTPUT_MONITORING_REGISTER
+- AI_MODEL_TOOL_CHANGE_CONTROL
+- AI_CREDIT_BURN_REGISTER
+- AI_TRACEABILITY_REGISTER
+- check_ai_management.py
+
+Rules:
+
+- No automatic release.
+- No automatic RLS/schema/destructive migration changes.
+- No AI-generated PASS without evidence.
+- No uncontrolled app-code changes.
+- No real customer data in unapproved AI tools.
+- No credentials, secrets or production data in AI prompts.
+- No invented emails, customer facts, standards claims or compliance claims.
+- Human approval is required for protected decisions and actions.
+
 ## App-development control coverage
 
 The management-system layer covers:
@@ -62,6 +92,7 @@ The management-system layer covers:
 - process knowledge reuse
 - prompt engineering and context control
 - identity/contact-data control
+- AI management-system controls
 - verification and validation/UAT
 - tenant rollout and release
 - rollback
