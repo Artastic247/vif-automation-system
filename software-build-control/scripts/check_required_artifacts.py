@@ -1,36 +1,5 @@
-#!/usr/bin/env python3
 from pathlib import Path
-import argparse,json
-
-FILES=[
-'README.md',
-'templates/APP_CONTEXT.md','templates/SCREEN_MAP.md','templates/DATA_TABLE_SPEC.md','templates/WORKFLOW_MAP.md','templates/RUNTIME_MAP.md','templates/CHANGE_BACKLOG.md','templates/CURRENT_JOB_CARD.md','templates/VERIFICATION_REGISTER.md','templates/RELEASE_REGISTER.md','templates/TENANT_ROLLOUT_REGISTER.md','templates/CUSTOMER_CHANGE_REGISTER.md','templates/CODING_PATTERN_REGISTER.md','templates/SYSTEM_FLAGS_REGISTER.md','templates/TOOL_ROUTING_MATRIX.md','templates/LESSONS_LEARNED.md',
-'standards/AGENTS.md','standards/GATE_MODEL.md','standards/TOOL_ROUTING_MATRIX.md','standards/DO_NOT_REPEAT_RULES.md',
-'github/ISSUE_TEMPLATE/defect.yml','github/ISSUE_TEMPLATE/change-request.yml','github/ISSUE_TEMPLATE/job-card.yml','github/pull_request_template.md',
-'management-system/CONTINGENCY_PLAN.md','management-system/DESIGN_DEVELOPMENT_CONTROL.md','management-system/CHANGE_CONTROL_PROCEDURE.md','management-system/APP_MAINTENANCE_PLAN.md','management-system/PROCESS_MAP.md','management-system/WORKFLOW_CATALOGUE.md','management-system/APP_INTAKE_CHECKLIST.md','management-system/UI_INTERFACE_CONTROL.md','management-system/DATABASE_BACKEND_CONTROL.md','management-system/GATE_CHECKLISTS.md','management-system/AGENT_REGISTER.md','management-system/SKILL_REGISTER.md','management-system/SKILL_TEMPLATE.md','management-system/PROCESS_KNOWLEDGE_REGISTER.md',
-'management-system/PROCESS_ARCHITECTURE.md','management-system/PROCESS_REGISTER.md','management-system/PROCESS_INTERACTION_MAP.md','management-system/PDCA_PROCESS_MODEL.md','management-system/PROCESS_TURTLE_TEMPLATE.md','management-system/PROCESS_OWNER_MATRIX.md','management-system/PROCESS_KPI_REGISTER.md','management-system/PROCESS_RISK_CONTROL_REGISTER.md','management-system/PROCESS_RECORDS_MATRIX.md','management-system/PROCESS_GATE_MATRIX.md',
-'management-system/PROMPT_CONTROL_PROCEDURE.md','management-system/PROMPT_REGISTER.md','management-system/PROMPT_QUALITY_CHECKLIST.md','management-system/PROMPT_FAILURE_REGISTER.md','management-system/PROMPT_REVISION_CONTROL.md','management-system/FORBIDDEN_PROMPT_PATTERNS.md','management-system/APPROVED_PROMPT_LIBRARY.md','management-system/CONTEXT_PACK_STANDARD.md','management-system/SOURCE_OF_TRUTH_LOCK_PROCEDURE.md','management-system/NO_TRUNCATION_WORK_INSTRUCTION.md','management-system/TOOL_SPECIFIC_PROMPT_INSTRUCTIONS.md',
-'management-system/IDENTITY_CONTACT_DATA_CONTROL.md','management-system/APPROVED_CONTACT_REGISTER.md',
-'management-system/AI_USE_POLICY.md','management-system/AI_SYSTEM_INVENTORY.md','management-system/AI_RISK_REGISTER.md','management-system/AI_IMPACT_ASSESSMENT.md','management-system/AI_OUTPUT_VERIFICATION_PROCEDURE.md','management-system/HUMAN_OVERSIGHT_MATRIX.md','management-system/AI_DATA_GOVERNANCE.md','management-system/AI_TOOL_PROVIDER_REVIEW.md','management-system/AI_LIFECYCLE_CONTROL.md','management-system/AI_BAD_OUTPUT_MONITORING_REGISTER.md','management-system/AI_MODEL_TOOL_CHANGE_CONTROL.md','management-system/AI_CREDIT_BURN_REGISTER.md','management-system/AI_TRACEABILITY_REGISTER.md',
-'scripts/check_process_architecture.py','scripts/check_prompt_context.py','scripts/check_identity_contact_data.py','scripts/check_ai_management.py'
-]
-FILES=list(dict.fromkeys(FILES))
-DIRS=['templates','scripts','standards','management-system','maps','validation-profiles','external-scan-examples','reports','github','app-registers','github/ISSUE_TEMPLATE','github/workflows']
-
-def run_check(root:Path):
-    mf=[x for x in FILES if not (root/x).is_file()]
-    md=[x for x in DIRS if not (root/x).is_dir()]
-    return {
-        'check':'required_artifacts',
-        'status':'PASS' if not mf and not md else 'BLOCKED',
-        'summary':f'{len(FILES)-len(mf)}/{len(FILES)} required files present; {len(DIRS)-len(md)}/{len(DIRS)} required directories present.',
-        'missing_files':mf,
-        'missing_directories':md
-    }
-
-def main():
-    p=argparse.ArgumentParser(); p.add_argument('--root',default='.')
-    a=p.parse_args(); r=run_check(Path(a.root)); print(json.dumps(r,indent=2))
-    return 0 if r['status']=='PASS' else 2
-
-if __name__=='__main__': raise SystemExit(main())
+REQUIRED=['README.md','MANIFEST.json','scripts/check_clause_09_performance_evaluation.py','scripts/validate_control_pack.py','scripts/check_required_artifacts.py','scripts/check_template_fields.py','reports/control-pack-validation.json','reports/control-pack-validation.md'] + ['management-system/clause-09-performance-evaluation/'+p for p in '''MLA_ASSESSMENT_PROCEDURE.md MLA_ASSESSMENT_REGISTER.md MLA_EVIDENCE_MATRIX.md MLA_UPGRADE_DOWNGRADE_RULES.md MLA_AUTOMATION_PERMISSION_MATRIX.md MLA_AUDIT_REQUIREMENTS.md MLA_MATURITY_OVERSTATEMENT_CONTROL.md CLAUSE_09_PERFORMANCE_EVALUATION_OVERVIEW.md MONITORING_MEASUREMENT_ANALYSIS_EVALUATION.md INTERNAL_AUDIT_PROCEDURE.md AUDIT_PROGRAMME.md AUDIT_CRITERIA_REGISTER.md AUDIT_FINDINGS_REGISTER.md MANAGEMENT_REVIEW_INPUT_REGISTER.md PROCESS_AUDIT_CHECKLIST.md AGENT_AUDIT_CHECKLIST.md SKILL_WORK_INSTRUCTION_AUDIT_CHECKLIST.md PROCEDURE_AUDIT_CHECKLIST.md WORKFLOW_AUDIT_CHECKLIST.md PROMPT_AUDIT_CHECKLIST.md CONTEXT_PACK_AUDIT_CHECKLIST.md APP_PRODUCT_AUDIT_CHECKLIST.md AI_MODEL_TOOL_AUDIT_CHECKLIST.md AI_OUTPUT_AUDIT_CHECKLIST.md INFORMATION_SECURITY_DATA_AUDIT_CHECKLIST.md EVIDENCE_AUDIT_CHECKLIST.md RELEASE_AUDIT_CHECKLIST.md VALIDATOR_CHECK_AUDIT_CHECKLIST.md SUPPLIER_TOOL_PROVIDER_AUDIT_CHECKLIST.md N8N_READINESS_AUDIT_CHECKLIST.md GITHUB_CI_PILOT_AUDIT_RECORD.md'''.split()]
+def run_check(root):
+    root=Path(root); missing=[p for p in REQUIRED if not (root/p).is_file()]
+    return {'check':'required_artifacts','status':'PASS' if not missing else 'BLOCKED','summary':f'{len(REQUIRED)-len(missing)}/{len(REQUIRED)} required files present.','findings':[{'path':m,'severity':'BLOCKED','issue':'missing'} for m in missing]}
