@@ -1,14 +1,14 @@
 {
   "status": "PASS",
   "mode": "control-pack",
-  "job_card": "SBC-JC-0006C",
+  "job_card": "SBC-JC-0006D",
   "required_artifacts": {
     "status": "PASS",
-    "summary": "49/49 required files present; 12/12 required directories present."
+    "summary": "61/61 required files present; 12/12 required directories present."
   },
   "template_fields": {
     "status": "PASS",
-    "summary": "All required template fields present, including process architecture and PDCA files."
+    "summary": "All required template fields present, including prompt/context-control files."
   },
   "process_architecture": {
     "status": "PASS",
@@ -17,6 +17,23 @@
     "core_operational_processes": 16,
     "support_processes": 12,
     "total_processes": 35
+  },
+  "prompt_context_controls": {
+    "status": "PASS",
+    "summary": "11/11 prompt and context-control artefacts present with required control terms.",
+    "prompt_context_files": [
+      "PROMPT_CONTROL_PROCEDURE.md",
+      "PROMPT_REGISTER.md",
+      "PROMPT_QUALITY_CHECKLIST.md",
+      "PROMPT_FAILURE_REGISTER.md",
+      "PROMPT_REVISION_CONTROL.md",
+      "FORBIDDEN_PROMPT_PATTERNS.md",
+      "APPROVED_PROMPT_LIBRARY.md",
+      "CONTEXT_PACK_STANDARD.md",
+      "SOURCE_OF_TRUTH_LOCK_PROCEDURE.md",
+      "NO_TRUNCATION_WORK_INSTRUCTION.md",
+      "TOOL_SPECIFIC_PROMPT_INSTRUCTIONS.md"
+    ]
   },
   "secret_risk": {
     "status": "PASS",
@@ -34,18 +51,6 @@
     "status": "PASS",
     "summary": "Evidence completeness checks passed."
   },
-  "process_architecture_files": [
-    "PROCESS_ARCHITECTURE.md",
-    "PROCESS_REGISTER.md",
-    "PROCESS_INTERACTION_MAP.md",
-    "PDCA_PROCESS_MODEL.md",
-    "PROCESS_TURTLE_TEMPLATE.md",
-    "PROCESS_OWNER_MATRIX.md",
-    "PROCESS_KPI_REGISTER.md",
-    "PROCESS_RISK_CONTROL_REGISTER.md",
-    "PROCESS_RECORDS_MATRIX.md",
-    "PROCESS_GATE_MATRIX.md"
-  ],
   "safe_boundaries": {
     "app_repo_modified": false,
     "supabase_modified": false,
