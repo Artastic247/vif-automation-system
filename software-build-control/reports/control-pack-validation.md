@@ -2,31 +2,33 @@
 
 - Mode: `control-pack`
 - Overall status: **PASS**
-- Job card: `SBC-JC-0006B`
+- Job card: `SBC-JC-0006C`
 
 | Check | Status | Summary |
 |---|---|---|
-| required_artifacts | PASS | 38/38 required files present; 12/12 required directories present. |
-| template_fields | PASS | All required template fields present, including app-development management-system files. |
+| required_artifacts | PASS | 49/49 required files present; 12/12 required directories present. |
+| template_fields | PASS | All required template fields present, including process architecture and PDCA files. |
+| process_architecture | PASS | 35/35 processes present with explicit process architecture and PDCA checks. |
 | secret_risk | PASS | No secret risks detected. |
 | large_files | PASS | No large-file warnings detected. |
 | forbidden_patterns | PASS | No forbidden-pattern findings detected. |
 | evidence_completeness | PASS | Evidence completeness checks passed. |
 
-## App-development management-system coverage confirmed
+## Process architecture coverage confirmed
 
-- Contingency planning
-- App intake
-- UI/interface control
-- Database/backend/RLS control
-- Gate checklists
-- Agents as workers
-- Skills as controlled methods
-- Process knowledge control
-- Design/development lifecycle control
-- Change control
-- App maintenance/support
-- Workflow/BPM catalogue
+- 7 management-oriented processes (MOP)
+- 16 core operational app-development processes (COP)
+- 12 support-oriented processes (SOP)
+- 35 total controlled processes
+- Process register
+- Process interaction map
+- Explicit PDCA process model
+- Turtle diagram template
+- Owner matrix
+- KPI register
+- Risk/control register
+- Records/evidence matrix
+- Gate matrix
 
 ## Safety boundary
 
