@@ -1,32 +1,40 @@
 # OPERATOR_PANEL
 
 ## Current mode
-Linked dry-run.
+Linked dry-run (target state: evidence-backed limited automation).
 
 ## Control links
-- Open app-build issues: _add saved GitHub search URL_
-- In-flight app-build PRs: _add saved GitHub search URL_
-- Failing required checks: _add saved GitHub search URL_
-- Workflow runs: _add actions URL_
+- Open app-build issues: saved GitHub issue query for route-labelled app-build items.
+- In-flight app-build PRs: saved GitHub PR query filtered to `software-build-control/**` changes.
+- Failing required checks: saved GitHub checks query for failed required statuses.
+- Workflow runs: GitHub Actions runs URL for control-pack workflows.
 
 ## Queue and triage
 - Confirm issue form completeness.
 - Confirm route label is present.
 - Confirm `CODEX_TASK_HANDOFF.md` fields are complete.
+- Confirm evidence links exist before merge.
 
 ## Required attention
 - PRs with mixed-scope changed files.
 - PRs blocked by stale base or merge conflict.
 - PRs missing required evidence links.
+- PRs that attempt protected-scope modification.
 
 ## Auth and safeguards snapshot
-- `OPENAI_API_KEY` configured: yes/no
-- GitHub App installed for automation: yes/no
-- Branch protection active on `main`: yes/no
-- Required checks configured: yes/no
+- `OPENAI_API_KEY` configured: [set at run review]
+- GitHub App installed for automation: [set at run review]
+- Branch protection active on `main`: [set at run review]
+- Required checks configured: [set at run review]
 
 ## Last known good run
-- Replay key:
-- Branch:
-- PR:
-- Evidence artifact:
+- Replay key: [required]
+- Branch: [required]
+- PR: [required]
+- Evidence artifact: [required]
+
+## Operator release decision
+- Gate result: PASS / HOLD / BLOCKED
+- Decision owner:
+- Decision timestamp:
+- Notes:
