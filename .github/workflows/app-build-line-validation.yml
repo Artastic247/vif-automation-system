@@ -1,0 +1,56 @@
+name: App Build Line Validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate-app-build-line:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run create-build-cards
+        run: |
+          python software-build-control/scripts/app_build_line/app_build_line.py create-build-cards --root software-build-control --app-name sample-app
+
+      - name: Run run-task
+        run: |
+          python software-build-control/scripts/app_build_line/app_build_line.py run-task --root software-build-control --app-name sample-app
+
+      - name: Run verify-build
+        run: |
+          python software-build-control/scripts/app_build_line/app_build_line.py verify-build --root software-build-control --app-name sample-app
+
+      - name: Evaluate gate decision
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          gate_path = Path("software-build-control/01-app-build-line/reports/app-build-line-gate-decision.json")
+          gate = json.loads(gate_path.read_text(encoding="utf-8"))
+          decision = gate.get("gate_decision", "UNKNOWN")
+
+          print(f"Gate decision: {decision}")
+
+          if decision == "HOLD":
+              raise SystemExit("Gate decision HOLD: failing workflow")
+
+          if decision == "PASS_WITH_WARNINGS":
+              print("::warning::Gate decision is PASS_WITH_WARNINGS (PASS is not claimed).")
+          PY
+
+      - name: Upload app-build-line reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build-line-reports
+          path: software-build-control/01-app-build-line/reports/
