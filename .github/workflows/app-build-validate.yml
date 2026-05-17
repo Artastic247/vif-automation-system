@@ -41,4 +41,32 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python software-build-control/scripts/validate_control_pack.py --root software-build-control --mode control-pack
+      - name: Run control-pack validation with diagnostics
+        run: |
+          set +e
+          python software-build-control/scripts/validate_control_pack.py --root software-build-control --mode control-pack
+          EXIT_CODE=$?
+          echo "Validation exit code: $EXIT_CODE"
+
+          test -f software-build-control/reports/control-pack-validation.json && echo "✓ JSON report created" || echo "✗ JSON report missing"
+          test -f software-build-control/reports/control-pack-validation.md && echo "✓ Markdown report created" || echo "✗ Markdown report missing"
+
+          if [ -f software-build-control/reports/control-pack-validation.json ]; then
+            python - <<'PY2'
+import json
+from pathlib import Path
+report = json.loads(Path('software-build-control/reports/control-pack-validation.json').read_text(encoding='utf-8'))
+print(f"Overall status: {report.get('status')}")
+for c in report.get('checks', []):
+    print(f"{c.get('check')}: {c.get('status')}")
+PY2
+          fi
+
+          exit $EXIT_CODE
+
+      - name: Upload validation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: control-pack-validation-reports-pr
+          path: software-build-control/reports/control-pack-validation.*
