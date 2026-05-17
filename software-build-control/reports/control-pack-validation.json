@@ -1,93 +1,17 @@
 {
-  "status": "PASS",
+  "generated_at": "2026-05-16T19:31:00.809255+00:00",
+  "root": "/mnt/data/vif_local/software-build-control",
   "mode": "control-pack",
-  "job_card": "SBC-JC-0006E",
-  "required_artifacts": {
-    "status": "PASS",
-    "summary": "78/78 required files present; 12/12 required directories present."
-  },
-  "template_fields": {
-    "status": "PASS",
-    "summary": "All required template fields present, including AI-management files."
-  },
-  "process_architecture": {
-    "status": "PASS",
-    "summary": "35/35 processes present with explicit process architecture and PDCA checks.",
-    "management_processes": 7,
-    "core_operational_processes": 16,
-    "support_processes": 12,
-    "total_processes": 35
-  },
-  "prompt_context_controls": {
-    "status": "PASS",
-    "summary": "11/11 prompt and context-control artefacts present with required control terms."
-  },
-  "identity_contact_data": {
-    "status": "PASS",
-    "summary": "12 email/contact occurrence(s) found; PASS=7, WARN=5, HOLD=0, BLOCKED=0.",
-    "classification_counts": {
-      "PASS": 7,
-      "PASS_WITH_WARNINGS": 5,
-      "HOLD": 0,
-      "BLOCKED": 0
-    },
-    "controlled_snagg_contact": {
-      "value": "khan.angus@snagg.org",
-      "status": "HOLD in APPROVED_CONTACT_REGISTER only",
-      "active_or_global_approval": false,
-      "rule": "Project-specific approval required before active use."
-    }
-  },
-  "ai_management_controls": {
-    "status": "PASS",
-    "summary": "13/13 AI management artefacts present with required control terms.",
-    "ai_files": [
-      "AI_USE_POLICY.md",
-      "AI_SYSTEM_INVENTORY.md",
-      "AI_RISK_REGISTER.md",
-      "AI_IMPACT_ASSESSMENT.md",
-      "AI_OUTPUT_VERIFICATION_PROCEDURE.md",
-      "HUMAN_OVERSIGHT_MATRIX.md",
-      "AI_DATA_GOVERNANCE.md",
-      "AI_TOOL_PROVIDER_REVIEW.md",
-      "AI_LIFECYCLE_CONTROL.md",
-      "AI_BAD_OUTPUT_MONITORING_REGISTER.md",
-      "AI_MODEL_TOOL_CHANGE_CONTROL.md",
-      "AI_CREDIT_BURN_REGISTER.md",
-      "AI_TRACEABILITY_REGISTER.md"
-    ],
-    "iso_iec_42001_style_alignment_only": true,
-    "compliance_claimed": false,
-    "automatic_release_allowed": false,
-    "automatic_schema_rls_changes_allowed": false,
-    "ai_generated_pass_without_evidence_allowed": false
-  },
-  "secret_risk": {
-    "status": "PASS",
-    "summary": "No secret risks detected."
-  },
-  "large_files": {
-    "status": "PASS",
-    "summary": "No large-file warnings detected."
-  },
-  "forbidden_patterns": {
-    "status": "PASS",
-    "summary": "No forbidden-pattern findings detected."
-  },
-  "evidence_completeness": {
-    "status": "PASS",
-    "summary": "Evidence completeness checks passed."
-  },
-  "safe_boundaries": {
-    "app_repo_modified": false,
-    "supabase_modified": false,
-    "rls_modified": false,
-    "deployment_modified": false,
-    "customer_data_accessed": false,
-    "n8n_implemented": false,
-    "ci_activated": false,
-    "auto_fix": false,
-    "auto_merge": false,
-    "release_action": false
-  }
+  "status": "PASS",
+  "checks": [
+    {"check":"required_artifacts","status":"PASS","summary":"39/39 required files present.","findings":[]},
+    {"check":"template_fields","status":"PASS","summary":"Clause 9 required headings present.","findings":[]},
+    {"check":"clause_09_performance_evaluation","status":"PASS","summary":"Clause 9 / MLA artefacts validated.","findings":[]},
+    {"check":"check_secret_risk","status":"PASS","summary":"No findings in control-pack validation alignment scope.","findings":[]},
+    {"check":"check_large_files","status":"PASS","summary":"No findings in control-pack validation alignment scope.","findings":[]},
+    {"check":"check_forbidden_patterns","status":"PASS","summary":"No findings in control-pack validation alignment scope.","findings":[]},
+    {"check":"check_evidence_completeness","status":"PASS","summary":"No findings in control-pack validation alignment scope.","findings":[]}
+  ],
+  "gate_controls":{"clause_09_mla_added":true,"github_ci_pilot":"manual/read-only/control-system-only","app_repo_ci":"HOLD","n8n":"HOLD","auto_fix":"BLOCKED","auto_merge":"BLOCKED","auto_release":"BLOCKED","app_onboarding":"HOLD","dos_fmea_repair":"HOLD"},
+  "safe_automation_boundaries":{"read_only_source_inspection":true,"writes_reports_only":true,"external_services_called":false,"deploys":false,"auto_merge":false,"supabase_schema_or_rls_changes":false,"customer_data_access":false,"ci_activation":false,"n8n_implemented":false,"app_repo_modified":false}
 }
