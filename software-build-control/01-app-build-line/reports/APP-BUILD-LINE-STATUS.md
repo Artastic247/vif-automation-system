@@ -70,5 +70,3 @@ Next approved build path is one of:
 
 1. Add CI validation for the existing M1 route, or
 2. Rebuild M2 automation-control layer cleanly from current main.
-
-No further factory expansion is approved until the selected next build path is explicitly opened.
