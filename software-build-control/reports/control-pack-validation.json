@@ -1,17 +1,204 @@
 {
-  "generated_at": "2026-05-16T19:31:00.809255+00:00",
-  "root": "/mnt/data/vif_local/software-build-control",
+  "generated_at": "2026-05-17T16:44:58.181760+00:00",
+  "root": "/workspace/vif-automation-system/software-build-control",
   "mode": "control-pack",
-  "status": "PASS",
+  "status": "HOLD",
   "checks": [
-    {"check":"required_artifacts","status":"PASS","summary":"39/39 required files present.","findings":[]},
-    {"check":"template_fields","status":"PASS","summary":"Clause 9 required headings present.","findings":[]},
-    {"check":"clause_09_performance_evaluation","status":"PASS","summary":"Clause 9 / MLA artefacts validated.","findings":[]},
-    {"check":"check_secret_risk","status":"PASS","summary":"No findings in control-pack validation alignment scope.","findings":[]},
-    {"check":"check_large_files","status":"PASS","summary":"No findings in control-pack validation alignment scope.","findings":[]},
-    {"check":"check_forbidden_patterns","status":"PASS","summary":"No findings in control-pack validation alignment scope.","findings":[]},
-    {"check":"check_evidence_completeness","status":"PASS","summary":"No findings in control-pack validation alignment scope.","findings":[]}
+    {
+      "check": "required_artifacts",
+      "status": "PASS",
+      "summary": "39/39 required files present.",
+      "findings": []
+    },
+    {
+      "check": "template_fields",
+      "status": "HOLD",
+      "summary": "5 heading findings.",
+      "findings": [
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_UPGRADE_DOWNGRADE_RULES.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_AUDIT_REQUIREMENTS.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/CLAUSE_09_PERFORMANCE_EVALUATION_OVERVIEW.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_MATURITY_OVERSTATEMENT_CONTROL.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_AUTOMATION_PERMISSION_MATRIX.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        }
+      ]
+    },
+    {
+      "check": "clause_09_performance_evaluation",
+      "status": "HOLD",
+      "summary": "12 Clause 9 findings.",
+      "findings": [
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_ASSESSMENT_PROCEDURE.md",
+          "severity": "HOLD",
+          "issue": "missing audit criteria/equivalent"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_ASSESSMENT_PROCEDURE.md",
+          "severity": "HOLD",
+          "issue": "missing management-review input"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_ASSESSMENT_REGISTER.md",
+          "severity": "HOLD",
+          "issue": "missing audit criteria/equivalent"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_ASSESSMENT_REGISTER.md",
+          "severity": "HOLD",
+          "issue": "missing management-review input"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_EVIDENCE_MATRIX.md",
+          "severity": "HOLD",
+          "issue": "missing audit criteria/equivalent"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_EVIDENCE_MATRIX.md",
+          "severity": "HOLD",
+          "issue": "missing management-review input"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_UPGRADE_DOWNGRADE_RULES.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_AUTOMATION_PERMISSION_MATRIX.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_AUDIT_REQUIREMENTS.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/MLA_MATURITY_OVERSTATEMENT_CONTROL.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/CLAUSE_09_PERFORMANCE_EVALUATION_OVERVIEW.md",
+          "severity": "HOLD",
+          "issue": "missing Outputs/records"
+        },
+        {
+          "path": "management-system/clause-09-performance-evaluation/GITHUB_CI_PILOT_AUDIT_RECORD.md",
+          "severity": "HOLD",
+          "issue": "missing CI phrase app-repo CI"
+        }
+      ]
+    },
+    {
+      "check": "secret_risk",
+      "status": "PASS",
+      "summary": "No secret risks detected.",
+      "findings": []
+    },
+    {
+      "check": "large_files",
+      "status": "PASS",
+      "summary": "No large-file warnings detected.",
+      "warnings": []
+    },
+    {
+      "check": "forbidden_patterns",
+      "status": "PASS",
+      "summary": "6 finding(s) for review.",
+      "findings": [
+        {
+          "type": "hardcoded_email_role_logic",
+          "file": "management-system/CONTEXT_PACK_STANDARD.md",
+          "line": 33,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        },
+        {
+          "type": "hardcoded_email_role_logic",
+          "file": "management-system/IDENTITY_CONTACT_DATA_CONTROL.md",
+          "line": 13,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        },
+        {
+          "type": "hardcoded_email_role_logic",
+          "file": "management-system/IDENTITY_CONTACT_DATA_CONTROL.md",
+          "line": 30,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        },
+        {
+          "type": "hardcoded_email_role_logic",
+          "file": "management-system/IDENTITY_CONTACT_DATA_CONTROL.md",
+          "line": 31,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        },
+        {
+          "type": "hardcoded_email_role_logic",
+          "file": "management-system/APPROVED_CONTACT_REGISTER.md",
+          "line": 25,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        },
+        {
+          "type": "hardcoded_email_role_logic",
+          "file": "management-system/APPROVED_CONTACT_REGISTER.md",
+          "line": 27,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        }
+      ],
+      "fail_on_finding": false
+    },
+    {
+      "check": "evidence_completeness",
+      "status": "PASS",
+      "summary": "Evidence completeness checks passed.",
+      "findings": []
+    }
   ],
-  "gate_controls":{"clause_09_mla_added":true,"github_ci_pilot":"manual/read-only/control-system-only","app_repo_ci":"HOLD","n8n":"HOLD","auto_fix":"BLOCKED","auto_merge":"BLOCKED","auto_release":"BLOCKED","app_onboarding":"HOLD","dos_fmea_repair":"HOLD"},
-  "safe_automation_boundaries":{"read_only_source_inspection":true,"writes_reports_only":true,"external_services_called":false,"deploys":false,"auto_merge":false,"supabase_schema_or_rls_changes":false,"customer_data_access":false,"ci_activation":false,"n8n_implemented":false,"app_repo_modified":false}
+  "gate_controls": {
+    "clause_09_mla_added": true,
+    "github_ci_pilot": "manual/read-only/control-system-only",
+    "app_repo_ci": "HOLD",
+    "n8n": "HOLD",
+    "auto_fix": "BLOCKED",
+    "auto_merge": "BLOCKED",
+    "auto_release": "BLOCKED",
+    "app_onboarding": "HOLD",
+    "dos_fmea_repair": "HOLD"
+  },
+  "safe_automation_boundaries": {
+    "read_only_source_inspection": true,
+    "writes_reports_only": true,
+    "external_services_called": false,
+    "deploys": false,
+    "auto_merge": false,
+    "supabase_schema_or_rls_changes": false,
+    "customer_data_access": false,
+    "ci_activation": false,
+    "n8n_implemented": false,
+    "app_repo_modified": false
+  }
 }

@@ -7,15 +7,48 @@ import os
 import re
 from pathlib import Path
 
+ALLOWED_ROUTES = {"codex", "claude-review", "chatgpt-operator", "manual-only"}
 
-def pick_route(labels: list[str], body: str) -> str:
+
+def _from_labels(labels: list[str]) -> str | None:
     for label in labels:
         if label.startswith("route/"):
-            return label.split("/", 1)[1]
-    m = re.search(r"(?im)^\s*route\s*:\s*(codex|claude-review|chatgpt-operator|manual-only)\s*$", body or "")
-    if m:
-        return m.group(1)
-    return "manual-only"
+            candidate = label.split("/", 1)[1].strip()
+            if candidate in ALLOWED_ROUTES:
+                return candidate
+            return "manual-only"
+    return None
+
+
+def _from_body(body: str) -> str | None:
+    body = body or ""
+    simple = re.search(r"(?im)^\s*route\s*:\s*([^\n\r#]+)\s*$", body)
+    if simple:
+        candidate = simple.group(1).strip().lower()
+        return candidate if candidate in ALLOWED_ROUTES else "manual-only"
+
+    form = re.search(r"(?ims)^\s*###\s*Initial route\s*$\s*([^\n\r]+)", body)
+    if form:
+        candidate = form.group(1).strip().lower()
+        return candidate if candidate in ALLOWED_ROUTES else "manual-only"
+
+    return None
+
+
+def pick_route(labels: list[str], body: str) -> str:
+    return _from_labels(labels) or _from_body(body) or "manual-only"
+
+
+def _get_issue_number(event: dict) -> str:
+    dispatch_number = event.get("inputs", {}).get("issue_number")
+    if dispatch_number not in (None, ""):
+        return str(dispatch_number)
+
+    issue_number = event.get("issue", {}).get("number")
+    if issue_number not in (None, ""):
+        return str(issue_number)
+
+    raise SystemExit("issue_number missing")
 
 
 def main() -> None:
@@ -27,10 +60,10 @@ def main() -> None:
     issue = event.get("issue", {})
     labels = [x.get("name", "") for x in issue.get("labels", []) if isinstance(x, dict)]
     body = issue.get("body", "")
-    issue_number = issue.get("number")
 
+    issue_number = _get_issue_number(event)
     route = pick_route(labels, body)
-    mode = "dry-run" if route in {"manual-only", "chatgpt-operator"} else "pr-write"
+    mode = "dry-run"
 
     out = Path(os.environ["GITHUB_OUTPUT"])
     with out.open("a", encoding="utf-8") as f:
