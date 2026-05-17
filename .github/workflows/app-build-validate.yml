@@ -1,44 +1,64 @@
-name: Control Pack Validate Pilot
+name: App Build PR Validation
 
 on:
-  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'software-build-control/**'
 
 permissions:
   contents: read
 
 jobs:
-  validate:
-    name: Run safe control-pack validation
+  intake:
+    name: vif/intake
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - run: test -f software-build-control/01-app-build-line/CODEX_TASK_HANDOFF.md
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+  diff_scope:
+    name: vif/diff-scope
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
         with:
-          python-version: '3.x'
+          fetch-depth: 0
+      - name: Check allowed paths
+        run: |
+          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }})
+          echo "$CHANGED"
+          if echo "$CHANGED" | rg -v '^(\.github/|software-build-control/)'; then
+            echo "Out-of-scope files detected"
+            exit 1
+          fi
 
-      - name: Run safe validation with diagnostics
+  ci:
+    name: vif/ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run control-pack validation with diagnostics
         run: |
           set +e
           python software-build-control/scripts/validate_control_pack.py --root software-build-control --mode control-pack
           EXIT_CODE=$?
           echo "Validation exit code: $EXIT_CODE"
 
-          echo "Checking expected report files..."
           test -f software-build-control/reports/control-pack-validation.json && echo "✓ JSON report created" || echo "✗ JSON report missing"
           test -f software-build-control/reports/control-pack-validation.md && echo "✓ Markdown report created" || echo "✗ Markdown report missing"
 
           if [ -f software-build-control/reports/control-pack-validation.json ]; then
-            echo "Validation report status:"
             python - <<'PY2'
 import json
 from pathlib import Path
 report = json.loads(Path('software-build-control/reports/control-pack-validation.json').read_text(encoding='utf-8'))
-print(f"- Overall status: {report.get('status')}")
+print(f"Overall status: {report.get('status')}")
 for c in report.get('checks', []):
-    print(f"- {c.get('check')}: {c.get('status')}")
+    print(f"{c.get('check')}: {c.get('status')}")
 PY2
           fi
 
@@ -48,5 +68,5 @@ PY2
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: control-pack-validation-reports
+          name: control-pack-validation-reports-pr
           path: software-build-control/reports/control-pack-validation.*
