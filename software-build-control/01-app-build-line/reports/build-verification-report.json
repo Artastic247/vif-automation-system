@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-05-17T12:29:56.682323+00:00",
+  "app_name": "sample-app",
+  "missing_required_reports": [],
+  "checks": {
+    "build_card_reviewed": true,
+    "task_packet_reviewed": true,
+    "required_fields_present": true,
+    "protected_scope_respected": true,
+    "app_repo_untouched": true,
+    "supabase_rls_untouched": true,
+    "n8n_untouched": true,
+    "app_repo_ci_untouched": true,
+    "release_not_attempted": true
+  },
+  "decision": "PASS_WITH_WARNINGS",
+  "warnings": [
+    "Dry-run MVP: scanner depth is shallow."
+  ]
+}
