@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "path": "templates/WORKFLOW_MAP.md"
+    },
+    {
+      "path": "management-system/WORKFLOW_CATALOGUE.md"
+    },
+    {
+      "path": "management-system/clause-09-performance-evaluation/WORKFLOW_AUDIT_CHECKLIST.md"
+    },
+    {
+      "path": "management-system/audit-programme/WORKFLOW_MANAGER_AUDIT_PLAN.md"
+    },
+    {
+      "path": "management-system/app-development-operating-model/APP_DEVELOPMENT_RUNTIME_FIRST_WORKFLOW.md"
+    }
+  ],
+  "status": "OK"
+}

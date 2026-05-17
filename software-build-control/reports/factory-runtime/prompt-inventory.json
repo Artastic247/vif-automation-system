@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "path": "management-system/PROMPT_REGISTER.md"
+    },
+    {
+      "path": "management-system/PROMPT_CONTROL_PROCEDURE.md"
+    },
+    {
+      "path": "management-system/APPROVED_PROMPT_LIBRARY.md"
+    },
+    {
+      "path": "management-system/PROMPT_REVISION_CONTROL.md"
+    },
+    {
+      "path": "management-system/PROMPT_FAILURE_REGISTER.md"
+    },
+    {
+      "path": "management-system/FORBIDDEN_PROMPT_PATTERNS.md"
+    },
+    {
+      "path": "management-system/PROMPT_QUALITY_CHECKLIST.md"
+    },
+    {
+      "path": "management-system/TOOL_SPECIFIC_PROMPT_INSTRUCTIONS.md"
+    },
+    {
+      "path": "management-system/clause-09-performance-evaluation/PROMPT_AUDIT_CHECKLIST.md"
+    },
+    {
+      "path": "management-system/audit-programme/PROMPT_AND_PROMPT_GENERATOR_AUDIT_PLAN.md"
+    },
+    {
+      "path": "management-system/work-instructions/WI_008_PROMPT_QUALITY_REVIEW.md"
+    },
+    {
+      "path": "management-system/work-instructions/WI_009_PROMPT_AUDIT.md"
+    },
+    {
+      "path": "management-system/app-development-operating-model/APP_DEVELOPMENT_SUPPORT_COMPETENCE_KNOWLEDGE_PROMPT_LINKAGE.md"
+    }
+  ],
+  "status": "OK"
+}

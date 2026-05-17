@@ -1,0 +1,7 @@
+{
+  "blocked_count": 0,
+  "decision": "PASS_WITH_WARNINGS",
+  "hold_count": 0,
+  "reason": "MVP runtime executed. Full scanner depth still pending.",
+  "warning_count": 1
+}
