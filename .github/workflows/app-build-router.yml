@@ -1,0 +1,43 @@
+name: App Build Router
+
+on:
+  issues:
+    types: [opened, labeled, edited]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to route"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  route:
+    if: github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '/route') || startsWith(github.event.comment.body, '/rerun')
+    runs-on: ubuntu-latest
+    outputs:
+      route: ${{ steps.route.outputs.route }}
+      mode: ${{ steps.route.outputs.mode }}
+      issue_number: ${{ steps.route.outputs.issue_number }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Route issue
+        id: route
+        run: python software-build-control/scripts/app_build_factory/route_issue.py
+
+  execute:
+    needs: route
+    uses: ./.github/workflows/app-build-codex-pr.yml
+    with:
+      issue_number: ${{ needs.route.outputs.issue_number }}
+      route: ${{ needs.route.outputs.route }}
+      mode: ${{ needs.route.outputs.mode }}
+    secrets: inherit

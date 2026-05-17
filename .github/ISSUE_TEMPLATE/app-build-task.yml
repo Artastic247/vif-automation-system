@@ -1,0 +1,71 @@
+name: App-build task
+description: Create a routable, auditable app-build work order.
+title: "[APP-BUILD] "
+labels: ["app-build", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One issue = one branch = one PR.
+
+  - type: input
+    id: objective
+    attributes:
+      label: Objective
+      description: One sentence for the expected outcome.
+      placeholder: Add operator panel documentation for app-build line.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: route
+    attributes:
+      label: Initial route
+      options:
+        - codex
+        - claude-review
+        - chatgpt-operator
+        - manual-only
+    validations:
+      required: true
+
+  - type: textarea
+    id: target_paths
+    attributes:
+      label: Allowed file paths
+      description: List the only files/directories this task may change.
+      placeholder: |
+        software-build-control/01-app-build-line/**
+    validations:
+      required: true
+
+  - type: textarea
+    id: forbidden_paths
+    attributes:
+      label: Forbidden file paths
+      description: Explicitly list areas that must not change.
+      placeholder: |
+        .github/workflows/**
+        supabase/**
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_checks
+    attributes:
+      label: Acceptance checks
+      description: Checks or statuses that must pass.
+      placeholder: |
+        vif/intake
+        vif/diff-scope
+        vif/ci
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and constraints
+      description: Architecture notes, safety limits, and required references.
+    validations:
+      required: true

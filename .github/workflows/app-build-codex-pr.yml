@@ -1,0 +1,75 @@
+name: App Build Execute
+
+on:
+  workflow_call:
+    inputs:
+      issue_number:
+        required: true
+        type: string
+      route:
+        required: true
+        type: string
+      mode:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: vif-issue-${{ inputs.issue_number }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build handoff artifact
+        run: |
+          mkdir -p artifacts
+          cat > artifacts/handoff-summary.md <<MD
+          # App-Build Handoff Summary
+          - Issue: #${{ inputs.issue_number }}
+          - Route: ${{ inputs.route }}
+          - Mode: ${{ inputs.mode }}
+          - Replay key: issue-${{ inputs.issue_number }}-r1
+          MD
+
+      - name: Upload handoff artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build-handoff-${{ inputs.issue_number }}
+          path: artifacts/handoff-summary.md
+
+      - name: Open draft PR placeholder
+        if: inputs.mode == 'pr-write'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = Number('${{ inputs.issue_number }}');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const branch = `issue-${issue_number}-automation`;
+
+            await github.rest.git.createRef({owner, repo, ref: `refs/heads/${branch}`, sha: context.sha}).catch(() => {});
+
+            const prs = await github.rest.pulls.list({owner, repo, state: 'open', head: `${owner}:${branch}`});
+            if (prs.data.length === 0) {
+              await github.rest.pulls.create({
+                owner, repo,
+                title: `[APP-BUILD] Issue #${issue_number} automated route`,
+                head: branch,
+                base: 'main',
+                body: `Linked issue: #${issue_number}\n\nRoute: ${{ inputs.route }}\nMode: ${{ inputs.mode }}\n\nThis is an automation placeholder PR created by the router workflow.`,
+                draft: true
+              });
+            }
+
+            await github.rest.issues.createComment({
+              owner, repo, issue_number,
+              body: `Automation route executed. Mode: **${{ inputs.mode }}**. Artifact uploaded: app-build-handoff-${issue_number}.`
+            });
