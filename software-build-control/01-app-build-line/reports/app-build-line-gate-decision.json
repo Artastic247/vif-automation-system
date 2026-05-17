@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-05-17T12:29:56.682780+00:00",
+  "app_name": "sample-app",
+  "gate_decision": "PASS_WITH_WARNINGS",
+  "pass_condition": "all command routes executed, required reports generated, no protected scope breach",
+  "warnings": [
+    "Dry-run MVP: scanner depth is shallow."
+  ]
+}
