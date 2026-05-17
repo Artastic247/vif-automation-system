@@ -1,10 +1,6 @@
 name: App Build Router
 
 on:
-  issues:
-    types: [opened, labeled, edited]
-  issue_comment:
-    types: [created]
   workflow_dispatch:
     inputs:
       issue_number:
@@ -14,12 +10,9 @@ on:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
 
 jobs:
   route:
-    if: github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '/route') || startsWith(github.event.comment.body, '/rerun')
     runs-on: ubuntu-latest
     outputs:
       route: ${{ steps.route.outputs.route }}
@@ -40,4 +33,3 @@ jobs:
       issue_number: ${{ needs.route.outputs.issue_number }}
       route: ${{ needs.route.outputs.route }}
       mode: ${{ needs.route.outputs.mode }}
-    secrets: inherit

@@ -14,9 +14,7 @@ on:
         type: string
 
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  contents: read
 
 jobs:
   execute:
@@ -35,8 +33,9 @@ jobs:
           # App-Build Handoff Summary
           - Issue: #${{ inputs.issue_number }}
           - Route: ${{ inputs.route }}
-          - Mode: ${{ inputs.mode }}
+          - Mode: dry-run
           - Replay key: issue-${{ inputs.issue_number }}-r1
+          - Mutation actions: disabled (artifact-only)
           MD
 
       - name: Upload handoff artifact
@@ -44,32 +43,3 @@ jobs:
         with:
           name: app-build-handoff-${{ inputs.issue_number }}
           path: artifacts/handoff-summary.md
-
-      - name: Open draft PR placeholder
-        if: inputs.mode == 'pr-write'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const issue_number = Number('${{ inputs.issue_number }}');
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const branch = `issue-${issue_number}-automation`;
-
-            await github.rest.git.createRef({owner, repo, ref: `refs/heads/${branch}`, sha: context.sha}).catch(() => {});
-
-            const prs = await github.rest.pulls.list({owner, repo, state: 'open', head: `${owner}:${branch}`});
-            if (prs.data.length === 0) {
-              await github.rest.pulls.create({
-                owner, repo,
-                title: `[APP-BUILD] Issue #${issue_number} automated route`,
-                head: branch,
-                base: 'main',
-                body: `Linked issue: #${issue_number}\n\nRoute: ${{ inputs.route }}\nMode: ${{ inputs.mode }}\n\nThis is an automation placeholder PR created by the router workflow.`,
-                draft: true
-              });
-            }
-
-            await github.rest.issues.createComment({
-              owner, repo, issue_number,
-              body: `Automation route executed. Mode: **${{ inputs.mode }}**. Artifact uploaded: app-build-handoff-${issue_number}.`
-            });
