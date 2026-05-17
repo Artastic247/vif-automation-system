@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-17T12:29:55.955696+00:00",
-  "app_name": "sample-app",
+  "timestamp": "2026-05-17T17:08:35.674188+00:00",
+  "app_name": "local-smoke-app",
   "assigned_agent": "codex-runtime-workstation",
   "required_specialist": "build-control integrator",
   "required_wi": [

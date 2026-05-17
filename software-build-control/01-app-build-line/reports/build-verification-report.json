@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-17T12:29:56.682323+00:00",
-  "app_name": "sample-app",
+  "timestamp": "2026-05-17T17:08:36.375202+00:00",
+  "app_name": "local-smoke-app",
   "missing_required_reports": [],
   "checks": {
     "build_card_reviewed": true,
