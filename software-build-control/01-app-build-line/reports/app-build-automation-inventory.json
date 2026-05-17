@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-05-17T13:02:12.950945+00:00",
+  "prompts": [
+    "build-card-to-agent-task-prompt.md",
+    "intake-to-spec-prompt.md",
+    "lessons-learned-prompt.md",
+    "master-app-build-prompt.md",
+    "spec-to-build-cards-prompt.md",
+    "verification-review-prompt.md"
+  ],
+  "commands": [
+    "create-build-cards.md",
+    "create-spec.md",
+    "intake-app.md",
+    "lessons-learned.md",
+    "prepare-pr.md",
+    "review-changes.md",
+    "run-task.md",
+    "verify-build.md"
+  ],
+  "hooks": [
+    "app-build-line-hooks.json",
+    "app-build-line-hooks.md"
+  ],
+  "inflows": [
+    "app-build-inflows.json",
+    "app-build-inflows.md"
+  ],
+  "schedules": [
+    "app-build-schedules.json",
+    "app-build-schedules.md"
+  ],
+  "validators": [
+    "app-build-validators.json",
+    "app-build-validators.md"
+  ]
+}

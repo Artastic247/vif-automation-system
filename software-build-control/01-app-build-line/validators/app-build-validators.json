@@ -1,0 +1,1 @@
+{"validators":["required-artifact-presence","protected-scope-assertion","gate-consistency"]}

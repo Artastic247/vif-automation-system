@@ -1,0 +1,8 @@
+{
+  "hooks": [
+    "pre-run",
+    "post-create-build-cards",
+    "post-run-task",
+    "post-verify-build"
+  ]
+}
