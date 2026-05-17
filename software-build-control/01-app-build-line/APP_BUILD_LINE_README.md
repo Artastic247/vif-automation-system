@@ -12,3 +12,7 @@ Generated in `software-build-control/01-app-build-line/reports/`.
 
 ## Safety
 The execution cell is constrained to software-build-control artifacts and must not touch app repos or protected systems.
+
+
+## Agent and skill coverage
+- See `AGENT_AND_SKILL_COVERAGE.md` for per-step required agent/workstation and skill mappings.

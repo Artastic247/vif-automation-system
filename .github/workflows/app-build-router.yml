@@ -1,0 +1,37 @@
+name: App Build Router
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to route"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  route:
+    runs-on: ubuntu-latest
+    outputs:
+      route: ${{ steps.route.outputs.route }}
+      mode: ${{ steps.route.outputs.mode }}
+      issue_number: ${{ steps.route.outputs.issue_number }}
+      replay_key: ${{ steps.route.outputs.replay_key }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Route issue
+        id: route
+        run: python software-build-control/scripts/app_build_factory/route_issue.py
+
+  dry_run:
+    needs: route
+    uses: ./.github/workflows/app-build-codex-pr.yml
+    with:
+      issue_number: ${{ needs.route.outputs.issue_number }}
+      route: ${{ needs.route.outputs.route }}
+      mode: dry-run
+      replay_key: ${{ needs.route.outputs.replay_key }}

@@ -1,0 +1,49 @@
+name: App Build Execute (Pilot Dry-Run Only)
+
+on:
+  workflow_call:
+    inputs:
+      issue_number:
+        required: true
+        type: string
+      route:
+        required: true
+        type: string
+      mode:
+        required: true
+        type: string
+      replay_key:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  execute:
+    if: inputs.mode == 'dry-run'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: vif-issue-${{ inputs.issue_number }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build handoff artifact
+        run: |
+          mkdir -p artifacts
+          cat > artifacts/handoff-summary.md <<MD
+          # App-Build Handoff Summary (Pilot Dry-Run)
+          - Issue: #${{ inputs.issue_number }}
+          - Route: ${{ inputs.route }}
+          - Mode: dry-run
+          - Replay key: ${{ inputs.replay_key }}
+          - PR mutation: disabled
+          MD
+
+      - name: Upload handoff artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build-handoff-${{ inputs.issue_number }}
+          path: artifacts/handoff-summary.md
