@@ -81,10 +81,31 @@ Expansion requires:
 Current approved state:
 
 ```text
-Controlled semi-automation / dry-run pilot
+Level 3.2 — Governed Controlled Automation
 ```
 
-Full automation remains on HOLD until the audit corrective actions are closed and effectiveness is verified.
+## Current verified capability
+
+Verified:
+
+- issue-driven routing,
+- dry-run artifact route,
+- documentation PR-write,
+- single-file runtime mutation,
+- related multi-file runtime/control propagation,
+- readiness decision propagation through workflow artifact,
+- human merge authority retained.
+
+Not yet verified:
+
+- real product-line dry-run,
+- app repo mutation,
+- deployment,
+- Supabase/RLS,
+- n8n orchestration,
+- full autonomy.
+
+Full automation remains on HOLD until future maturity gates are verified and approved.
 
 ## Management review inputs
 
@@ -104,3 +125,9 @@ The following must be reported to management review or equivalent governance rev
 The factory may only accelerate when management-system controls are demonstrably ahead of the execution layer.
 
 If the factory begins driving governance reactively, an audit or corrective action must be raised.
+
+Next required gate:
+
+```text
+M7 — first product-line dry-run after MR-001 status alignment
+```
