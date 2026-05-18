@@ -12,6 +12,9 @@ on:
       mode:
         required: true
         type: string
+      readiness_decision:
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -33,7 +36,8 @@ jobs:
           # App-Build Handoff Summary
           - Issue: #${{ inputs.issue_number }}
           - Route: ${{ inputs.route }}
-          - Mode: dry-run
+          - Mode: ${{ inputs.mode }}
+          - Readiness decision: ${{ inputs.readiness_decision || 'PASS' }}
           - Replay key: issue-${{ inputs.issue_number }}-r1
           - Mutation actions: disabled (artifact-only)
           MD
