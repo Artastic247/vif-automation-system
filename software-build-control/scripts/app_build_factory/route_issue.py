@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 
 ALLOWED_ROUTES = {"codex", "claude-review", "chatgpt-operator", "manual-only"}
+READINESS_HOLD_VALUES = {"fail", "failed", "false", "hold", "not-ready", "not_ready", "blocked"}
 
 
 def _from_labels(labels: list[str]) -> str | None:
@@ -39,6 +40,12 @@ def pick_route(labels: list[str], body: str) -> str:
     return _from_labels(labels) or _from_body(body) or "manual-only"
 
 
+def readiness_failed() -> bool:
+    """Return True when the workflow environment explicitly requests a HOLD state."""
+    readiness = os.environ.get("VIF_TOOLCHAIN_READINESS", "ready").strip().lower()
+    return readiness in READINESS_HOLD_VALUES
+
+
 def _get_issue_number(event: dict) -> str:
     dispatch_number = event.get("inputs", {}).get("issue_number")
     if dispatch_number not in (None, ""):
@@ -64,12 +71,19 @@ def main() -> None:
     issue_number = _get_issue_number(event)
     route = pick_route(labels, body)
     mode = "dry-run"
+    readiness_decision = "PASS"
+
+    if readiness_failed():
+        route = "manual-only"
+        mode = "hold"
+        readiness_decision = "HOLD"
 
     out = Path(os.environ["GITHUB_OUTPUT"])
     with out.open("a", encoding="utf-8") as f:
         f.write(f"route={route}\n")
         f.write(f"mode={mode}\n")
         f.write(f"issue_number={issue_number}\n")
+        f.write(f"readiness_decision={readiness_decision}\n")
 
 
 if __name__ == "__main__":
