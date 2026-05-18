@@ -21,6 +21,9 @@ Linked dry-run (target state: evidence-backed limited automation).
 - PRs missing required evidence links.
 - PRs that attempt protected-scope modification.
 
+## Corrective-action control note
+Before approving app-build work, confirm that generated evidence follows the generated-artifact policy, toolchain readiness is checked before assigning Codex or another build station, and human release authority remains active for merge decisions.
+
 ## Auth and safeguards snapshot
 - `OPENAI_API_KEY` configured: [set at run review]
 - GitHub App installed for automation: [set at run review]
