@@ -53,6 +53,15 @@ Reason: full-maturity promotion evidence is not yet complete (required-check enf
 - **Intake/context management:** implemented baseline checks; broaden freshness/source-lock automation next.
 - **New product introduction / project management:** partially implemented through app-build-line packet and gate model; full NPI stage-gate dossier is the next build item.
 
+
+## Clarification — process controls vs quality aids
+To confirm your point: some items listed in this update are **quality aids**, not mandatory core-process steps.
+
+- **Core-process controls (required for gate decisions):** MLA permission matrix, protected-scope guardrails, required verification evidence, and PASS/HOLD/BLOCKED governance checks.
+- **Quality aids (supporting output quality):** operator snapshot convenience view, additional telemetry summaries, and non-mandatory helper reports.
+
+Rule applied: quality aids can improve consistency and speed, but they must not be treated as process-maturity evidence unless explicitly mapped to a required control in the management system.
+
 ## Next build sprint (recommended)
 1. Implement `HOOK_REGISTER.md` + hook health checker script + CI fail policy.
 2. Add NPI stage-gate template set (intake, feasibility, design, verification, launch readiness, post-launch review).

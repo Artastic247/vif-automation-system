@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-18T03:03:29.562659+00:00",
+  "generated_at": "2026-05-18T04:38:13.386001+00:00",
   "root": "/workspace/vif-automation-system/software-build-control",
   "mode": "control-pack",
   "status": "PASS",
@@ -41,6 +41,13 @@
       "findings": [
         {
           "type": "hardcoded_email_role_logic",
+          "file": "management-system/CONTEXT_PACK_STANDARD.md",
+          "line": 33,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        },
+        {
+          "type": "hardcoded_email_role_logic",
           "file": "management-system/APPROVED_CONTACT_REGISTER.md",
           "line": 25,
           "severity": "review",
@@ -71,13 +78,6 @@
           "type": "hardcoded_email_role_logic",
           "file": "management-system/IDENTITY_CONTACT_DATA_CONTROL.md",
           "line": 31,
-          "severity": "review",
-          "message": "Pattern requires human review."
-        },
-        {
-          "type": "hardcoded_email_role_logic",
-          "file": "management-system/CONTEXT_PACK_STANDARD.md",
-          "line": 33,
           "severity": "review",
           "message": "Pattern requires human review."
         }
