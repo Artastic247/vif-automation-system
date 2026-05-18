@@ -24,7 +24,7 @@ Reason: full-maturity promotion evidence is not yet complete (required-check enf
 
 ### In-progress implementation (partial)
 1. Heartbeat orchestration across Clause 4–10 controls.
-2. Hook lifecycle maintenance control as executable policy.
+2. Hook lifecycle maintenance control baseline implemented (register + CI check), effectiveness trending pending.
 3. Workflow-state SLI/SLO + escalation automation.
 
 ### Remaining for full-maturity promotion
@@ -38,7 +38,7 @@ Reason: full-maturity promotion evidence is not yet complete (required-check enf
 | IATF-type control area | Current implementation status | Evidence posture |
 |---|---|---|
 | Agent skills and competence assignment | **Implemented (baseline)** via assignment/maturity matrices and specialist activation rules | Documented; needs periodic effectiveness trend evidence |
-| Hook maintenance/development control | **Partial** | Conceptualized and planned; executable hook registry + health enforcement still pending |
+| Hook maintenance/development control | **Implemented (baseline) + Partial (advanced)** | Hook register and CI hook-health checks active; advanced cadence/effectiveness analytics pending |
 | Workflow management | **Implemented (baseline) + Partial (advanced)** | Smoke CI + route controls active; event-state health SLIs/SLOs pending |
 | Intake and context governance | **Implemented (baseline)** | Prompt/context checks active and artifacted; freshness automation needs expansion |
 | NPI / project-management gating | **Partial** | Build-line planning and gated route active; full stage-gate pack with standardized NPI records pending |
@@ -48,7 +48,7 @@ Reason: full-maturity promotion evidence is not yet complete (required-check enf
 ## Specific response to your implementation question
 ### Have these been implemented?
 - **Agent skills:** implemented at baseline governance level; continue with trend/effectiveness evidence.
-- **Hooks:** partially implemented; needs explicit hook register + enforced health checks.
+- **Hooks:** baseline implemented (register + enforced CI health checks); next is advanced trend analytics and escalation telemetry.
 - **Workflows:** implemented for baseline smoke route; advanced telemetry/escalation still pending.
 - **Intake/context management:** implemented baseline checks; broaden freshness/source-lock automation next.
 - **New product introduction / project management:** partially implemented through app-build-line packet and gate model; full NPI stage-gate dossier is the next build item.
@@ -63,10 +63,10 @@ To confirm your point: some items listed in this update are **quality aids**, no
 Rule applied: quality aids can improve consistency and speed, but they must not be treated as process-maturity evidence unless explicitly mapped to a required control in the management system.
 
 ## Next build sprint (recommended)
-1. Implement `HOOK_REGISTER.md` + hook health checker script + CI fail policy.
-2. Add NPI stage-gate template set (intake, feasibility, design, verification, launch readiness, post-launch review).
-3. Add heartbeat controller that evaluates MLA maturity + automation request and emits PASS/HOLD/BLOCKED with mandatory CAPA triggers.
-4. Run one controlled fail/pass demonstration cycle and attach evidence packet for maturity-promotion review.
+1. Add NPI stage-gate template set (intake, feasibility, design, verification, launch readiness, post-launch review).
+2. Add heartbeat controller that evaluates MLA maturity + automation request and emits PASS/HOLD/BLOCKED with mandatory CAPA triggers.
+3. Run one controlled fail/pass demonstration cycle and attach evidence packet for maturity-promotion review.
+4. Add hook effectiveness trend + missed-cadence escalation metrics to close advanced hook maturity.
 
 ## Promotion criterion to claim “full automation maturity”
 Do **not** claim full maturity until all four are evidenced:

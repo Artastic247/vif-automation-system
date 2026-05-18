@@ -1,0 +1,6 @@
+{
+  "audit": "automation_setup_file_audit",
+  "status": "PASS",
+  "summary": "Automation setup audit passed.",
+  "findings": []
+}
