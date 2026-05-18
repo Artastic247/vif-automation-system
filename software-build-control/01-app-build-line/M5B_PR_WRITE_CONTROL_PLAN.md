@@ -206,6 +206,10 @@ Fail criteria:
 - auto-merge,
 - hidden operator recovery.
 
+## VER-002 verification note
+
+The first M5B PR-write verification is limited to documentation-only scope and does not permit runtime, workflow, generated-artifact, protected-scope or auto-merge actions.
+
 ## Current decision
 
 M5B is approved for planning only.
