@@ -1,6 +1,6 @@
 # Build Verification Report
 
-- app name: local-smoke-app
+- app name: verification-app
 - decision: PASS_WITH_WARNINGS
 - missing required reports: none
 - protected scope respected: True
