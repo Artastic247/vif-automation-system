@@ -18,6 +18,7 @@ jobs:
       route: ${{ steps.route.outputs.route }}
       mode: ${{ steps.route.outputs.mode }}
       issue_number: ${{ steps.route.outputs.issue_number }}
+      readiness_decision: ${{ steps.route.outputs.readiness_decision }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,3 +34,4 @@ jobs:
       issue_number: ${{ needs.route.outputs.issue_number }}
       route: ${{ needs.route.outputs.route }}
       mode: ${{ needs.route.outputs.mode }}
+      readiness_decision: ${{ needs.route.outputs.readiness_decision }}
