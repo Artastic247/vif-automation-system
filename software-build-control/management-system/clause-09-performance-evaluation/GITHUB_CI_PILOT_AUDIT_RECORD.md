@@ -60,3 +60,7 @@ Workflow change, validation change, automation request or finding.
 - risks: false PASS, unsafe expansion, validator gaps
 - current gate decision: HOLD for expansion, PASS for controlled manual pilot
 - expansion allowed: no
+
+## CI scope note
+This pilot record is control-system only and does not authorise app-repo CI activation.
+

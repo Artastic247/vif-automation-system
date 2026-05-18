@@ -38,3 +38,10 @@ Escalate maturity overstatement, failed audit, unsafe automation request, or mis
 
 ## Update trigger
 New process/tool/app, failed audit, RCA/CAPA action, management review, or automation request.
+
+## Audit criteria
+Evidence must support the claimed maturity level and any automation permission decision.
+
+## Management-review input
+Assessment outcomes, HOLD/BLOCKED trends, and permission changes feed management review.
+

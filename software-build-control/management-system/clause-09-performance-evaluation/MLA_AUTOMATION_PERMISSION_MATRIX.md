@@ -48,3 +48,7 @@ Automation permission changes and blocks feed management review.
 
 ## Update trigger
 Maturity change, CI/n8n request, tool change, audit finding.
+
+## Outputs/records
+Controlled decision record, gate outcome record, and linked evidence references.
+

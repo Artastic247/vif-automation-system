@@ -45,3 +45,10 @@ Maturity overstatement.
 
 ## Update trigger
 Model change or audit finding.
+
+## Audit criteria
+Evidence must support the claimed maturity level and any automation permission decision.
+
+## Management-review input
+Assessment outcomes, HOLD/BLOCKED trends, and permission changes feed management review.
+

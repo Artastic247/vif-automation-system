@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-17T12:29:55.955696+00:00",
-  "app_name": "sample-app",
+  "timestamp": "2026-05-17T20:03:13.144815+00:00",
+  "app_name": "verification-app",
   "assigned_agent": "codex-runtime-workstation",
   "required_specialist": "build-control integrator",
   "required_wi": [

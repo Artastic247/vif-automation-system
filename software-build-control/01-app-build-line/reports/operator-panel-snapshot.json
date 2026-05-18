@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-05-17T17:21:37.008951+00:00",
+  "mode": "linked-dry-run",
+  "control_links": {
+    "open_app_build_issues": "https://github.com/<org>/<repo>/issues?q=is%3Aopen+label%3Aapp-build-line",
+    "in_flight_app_build_prs": "https://github.com/<org>/<repo>/pulls?q=is%3Aopen+software-build-control",
+    "failing_required_checks": "https://github.com/<org>/<repo>/pulls?q=is%3Aopen+status%3Afailure",
+    "workflow_runs": "https://github.com/<org>/<repo>/actions/workflows/app-build-line-smoke.yml"
+  },
+  "auth_safeguards": {
+    "openai_api_key_configured": false,
+    "github_app_installed_for_automation": "manual-review-required",
+    "branch_protection_main": "manual-review-required",
+    "required_checks_configured": "manual-review-required"
+  },
+  "last_known_good_run": {
+    "replay_key": "2026-05-17T17:08:36.375667+00:00",
+    "branch": "main",
+    "pr": "manual-link-required",
+    "evidence_artifact": "app-build-line-smoke-evidence",
+    "app_name": "local-smoke-app",
+    "gate_decision": "PASS_WITH_WARNINGS"
+  }
+}

@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-05-17T16:44:58.181760+00:00",
+  "generated_at": "2026-05-18T04:46:36.680561+00:00",
   "root": "/workspace/vif-automation-system/software-build-control",
   "mode": "control-pack",
-  "status": "HOLD",
+  "status": "PASS",
   "checks": [
     {
       "check": "required_artifacts",
@@ -12,102 +12,15 @@
     },
     {
       "check": "template_fields",
-      "status": "HOLD",
-      "summary": "5 heading findings.",
-      "findings": [
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_UPGRADE_DOWNGRADE_RULES.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_AUDIT_REQUIREMENTS.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/CLAUSE_09_PERFORMANCE_EVALUATION_OVERVIEW.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_MATURITY_OVERSTATEMENT_CONTROL.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_AUTOMATION_PERMISSION_MATRIX.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        }
-      ]
+      "status": "PASS",
+      "summary": "Clause 9 required headings present.",
+      "findings": []
     },
     {
       "check": "clause_09_performance_evaluation",
-      "status": "HOLD",
-      "summary": "12 Clause 9 findings.",
-      "findings": [
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_ASSESSMENT_PROCEDURE.md",
-          "severity": "HOLD",
-          "issue": "missing audit criteria/equivalent"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_ASSESSMENT_PROCEDURE.md",
-          "severity": "HOLD",
-          "issue": "missing management-review input"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_ASSESSMENT_REGISTER.md",
-          "severity": "HOLD",
-          "issue": "missing audit criteria/equivalent"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_ASSESSMENT_REGISTER.md",
-          "severity": "HOLD",
-          "issue": "missing management-review input"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_EVIDENCE_MATRIX.md",
-          "severity": "HOLD",
-          "issue": "missing audit criteria/equivalent"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_EVIDENCE_MATRIX.md",
-          "severity": "HOLD",
-          "issue": "missing management-review input"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_UPGRADE_DOWNGRADE_RULES.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_AUTOMATION_PERMISSION_MATRIX.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_AUDIT_REQUIREMENTS.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/MLA_MATURITY_OVERSTATEMENT_CONTROL.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/CLAUSE_09_PERFORMANCE_EVALUATION_OVERVIEW.md",
-          "severity": "HOLD",
-          "issue": "missing Outputs/records"
-        },
-        {
-          "path": "management-system/clause-09-performance-evaluation/GITHUB_CI_PILOT_AUDIT_RECORD.md",
-          "severity": "HOLD",
-          "issue": "missing CI phrase app-repo CI"
-        }
-      ]
+      "status": "PASS",
+      "summary": "Clause 9 / MLA artefacts validated.",
+      "findings": []
     },
     {
       "check": "secret_risk",
@@ -135,6 +48,20 @@
         },
         {
           "type": "hardcoded_email_role_logic",
+          "file": "management-system/APPROVED_CONTACT_REGISTER.md",
+          "line": 25,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        },
+        {
+          "type": "hardcoded_email_role_logic",
+          "file": "management-system/APPROVED_CONTACT_REGISTER.md",
+          "line": 27,
+          "severity": "review",
+          "message": "Pattern requires human review."
+        },
+        {
+          "type": "hardcoded_email_role_logic",
           "file": "management-system/IDENTITY_CONTACT_DATA_CONTROL.md",
           "line": 13,
           "severity": "review",
@@ -151,20 +78,6 @@
           "type": "hardcoded_email_role_logic",
           "file": "management-system/IDENTITY_CONTACT_DATA_CONTROL.md",
           "line": 31,
-          "severity": "review",
-          "message": "Pattern requires human review."
-        },
-        {
-          "type": "hardcoded_email_role_logic",
-          "file": "management-system/APPROVED_CONTACT_REGISTER.md",
-          "line": 25,
-          "severity": "review",
-          "message": "Pattern requires human review."
-        },
-        {
-          "type": "hardcoded_email_role_logic",
-          "file": "management-system/APPROVED_CONTACT_REGISTER.md",
-          "line": 27,
           "severity": "review",
           "message": "Pattern requires human review."
         }

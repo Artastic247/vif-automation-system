@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-17T12:29:56.682780+00:00",
-  "app_name": "sample-app",
+  "timestamp": "2026-05-17T20:03:13.898027+00:00",
+  "app_name": "verification-app",
   "gate_decision": "PASS_WITH_WARNINGS",
   "pass_condition": "all command routes executed, required reports generated, no protected scope breach",
   "warnings": [

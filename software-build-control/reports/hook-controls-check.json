@@ -1,0 +1,6 @@
+{
+  "check": "hook_controls",
+  "status": "PASS",
+  "summary": "Hook register and lifecycle controls are present.",
+  "findings": []
+}

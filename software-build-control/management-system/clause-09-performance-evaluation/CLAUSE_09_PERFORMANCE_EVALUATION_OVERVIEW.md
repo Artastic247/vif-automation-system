@@ -41,3 +41,7 @@ All major trends, findings, maturity changes and blocked gates feed management r
 
 ## Update trigger
 Audit programme, release, incident, validation change, management review.
+
+## Outputs/records
+Controlled decision record, gate outcome record, and linked evidence references.
+
