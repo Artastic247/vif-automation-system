@@ -41,3 +41,7 @@ Downgrades, repeated holds, and automation blocks feed management review.
 
 ## Update trigger
 Assessment, audit finding, RCA/CAPA result, management review, automation request, app onboarding request.
+
+## Outputs/records
+Controlled decision record, gate outcome record, and linked evidence references.
+

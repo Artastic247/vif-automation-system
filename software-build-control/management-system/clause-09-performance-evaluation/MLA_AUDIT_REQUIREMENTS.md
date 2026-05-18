@@ -41,3 +41,7 @@ Audit coverage gaps and overdue audits feed management review.
 
 ## Update trigger
 Maturity change, risk change, incident, automation request.
+
+## Outputs/records
+Controlled decision record, gate outcome record, and linked evidence references.
+

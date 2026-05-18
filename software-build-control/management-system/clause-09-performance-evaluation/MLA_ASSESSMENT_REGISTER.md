@@ -39,3 +39,10 @@ Escalate BLOCKED maturity or automation conflict.
 
 ## Update trigger
 Assessment, audit, incident, RCA/CAPA, release, or automation request.
+
+## Audit criteria
+Evidence must support the claimed maturity level and any automation permission decision.
+
+## Management-review input
+Assessment outcomes, HOLD/BLOCKED trends, and permission changes feed management review.
+

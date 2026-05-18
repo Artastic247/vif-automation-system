@@ -1,0 +1,7 @@
+{
+  "check": "prompt_context_controls",
+  "status": "PASS",
+  "summary": "11/11 prompt and context-control artefacts present with required control terms.",
+  "prompt_context_files_expected": 11,
+  "findings": []
+}

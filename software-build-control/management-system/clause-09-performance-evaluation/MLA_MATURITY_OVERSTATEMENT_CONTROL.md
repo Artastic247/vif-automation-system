@@ -41,3 +41,7 @@ All blocked overstatement records feed management review.
 
 ## Update trigger
 Any maturity/readiness/compliance claim or audit finding.
+
+## Outputs/records
+Controlled decision record, gate outcome record, and linked evidence references.
+

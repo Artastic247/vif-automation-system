@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-05-17T12:29:55.167227+00:00",
-  "build_card_id": "BC-SAMPLE_APP-0001",
-  "app_name": "sample-app",
+  "timestamp": "2026-05-17T20:03:12.376023+00:00",
+  "build_card_id": "BC-VERIFICATION_APP-0001",
+  "app_name": "verification-app",
   "module": "01-app-build-line",
   "objective": "Generate thin build execution cell artifacts",
   "scope_in": [

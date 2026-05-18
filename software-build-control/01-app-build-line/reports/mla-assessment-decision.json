@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-05-17T17:35:00+00:00",
+  "item_id": "ABL-AUTOMATION-CONTROL-M2",
+  "item_name": "app-build-line automation-control scope",
+  "item_type": "workflow-and-control-layer",
+  "owner_agent": "MLA Assessor + QA Gatekeeper",
+  "current_maturity_level": "M2",
+  "evidence_supporting_maturity": [
+    "M1 route executes create-build-cards/run-task/verify-build with evidence outputs",
+    "Smoke workflow defined for pull_request paths under software-build-control/**",
+    "Operator snapshot generation in place"
+  ],
+  "missing_evidence": [
+    "Required-check enforcement on main branch not evidenced in repo artifacts",
+    "Reference PR proving smoke required-check block on failure",
+    "Documented rollback/disable route test for each automation toggle"
+  ],
+  "risk": "medium",
+  "audit_frequency": "per change + weekly while HOLD",
+  "automation_permission": "sandbox/manual only",
+  "gate_decision": "HOLD",
+  "decision_reason": "Evidence is partial for progression beyond M2; maintain limited/manual automation until required-check and rollback evidence is complete.",
+  "matrix_reference": "management-system/clause-09-performance-evaluation/MLA_AUTOMATION_PERMISSION_MATRIX.md",
+  "wi_reference": "management-system/work-instructions/WI_022_MLA_ASSESSMENT.md",
+  "next_actions": [
+    "Capture branch-protection screenshot or exported settings showing required smoke check",
+    "Run and archive one failing smoke scenario and one passing scenario",
+    "Record rollback/disable route rehearsal for smoke automation"
+  ],
+  "review_date": "2026-05-24"
+}

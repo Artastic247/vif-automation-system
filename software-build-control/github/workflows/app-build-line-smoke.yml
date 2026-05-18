@@ -1,0 +1,42 @@
+name: App Build Line Smoke
+
+on:
+  pull_request:
+    paths:
+      - 'software-build-control/**'
+  workflow_dispatch:
+
+jobs:
+  smoke-app-build-line:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run prompt and context controls check
+        run: |
+          python software-build-control/scripts/check_prompt_context.py --root software-build-control | tee software-build-control/reports/prompt-context-check.json
+
+      - name: Run app-build-line smoke route
+        run: |
+          python software-build-control/scripts/app_build_line/app_build_line.py create-build-cards --root software-build-control --app-name ci-smoke-app
+          python software-build-control/scripts/app_build_line/app_build_line.py run-task --root software-build-control --app-name ci-smoke-app
+          python software-build-control/scripts/app_build_line/app_build_line.py verify-build --root software-build-control --app-name ci-smoke-app
+
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build-line-smoke-evidence
+          path: |
+            software-build-control/reports/prompt-context-check.json
+            software-build-control/01-app-build-line/reports/build-card-output.json
+            software-build-control/01-app-build-line/reports/agent-task-packet.json
+            software-build-control/01-app-build-line/reports/build-verification-report.json
+            software-build-control/01-app-build-line/reports/build-verification-report.md
+            software-build-control/01-app-build-line/reports/app-build-line-gate-decision.json
