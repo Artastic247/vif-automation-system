@@ -42,6 +42,13 @@ AUTO_004_FACTORY_MEMORY_TRIGGER_PATTERNS = (
     "software-build-control/scripts/auto_pr_review.py",
 )
 
+AUTO_005_FACTORY_MEMORY_POLLER_PATTERNS = (
+    ".codex/AGENTS.md",
+    ".github/workflows/factory-memory-ingest.yml",
+    "factory-memory/registers/FACTORY_MEMORY_REGISTER.md",
+    "software-build-control/scripts/auto_pr_review.py",
+)
+
 FORBIDDEN_PATTERNS = (
     ".github/workflows/**",
     "software-build-control/reports/**",
@@ -91,6 +98,8 @@ def matches_any(path: str, patterns: Sequence[str]) -> bool:
 def review_profile(head_branch: str) -> tuple[str, tuple[str, ...], str]:
     if head_branch.startswith("codex-plugin-"):
         return "Codex plugin pack", PLUGIN_PACK_PATTERNS, "Head branch uses codex-plugin- prefix"
+    if head_branch.startswith("auto-issue-") and "auto-005" in head_branch and "factory-memory" in head_branch and "poller" in head_branch:
+        return "AUTO-005 factory memory poller", AUTO_005_FACTORY_MEMORY_POLLER_PATTERNS, "Head branch uses controlled AUTO-005 factory-memory poller prefix"
     if head_branch.startswith("auto-issue-") and "auto-004" in head_branch and "factory-memory" in head_branch and "trigger" in head_branch:
         return "AUTO-004 factory memory trigger", AUTO_004_FACTORY_MEMORY_TRIGGER_PATTERNS, "Head branch uses controlled AUTO-004 factory-memory trigger prefix"
     if head_branch.startswith("auto-issue-") and "auto-003" in head_branch and "factory-memory" in head_branch:
@@ -186,7 +195,7 @@ def build_review(args: argparse.Namespace) -> tuple[str, bool]:
     if changed_files:
         lines.extend([f"- `{path}`" for path in changed_files])
     else:
-        lines.append("- `(none)`")
+        lines.append("- `(none)")
 
     lines.extend(["", "## Checks passed", ""])
     if checks_passed:
