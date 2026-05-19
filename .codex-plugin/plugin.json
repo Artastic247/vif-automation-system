@@ -1,0 +1,39 @@
+{
+  "name": "vif-codex-agent-pack",
+  "version": "0.1.0",
+  "description": "Codex-ready VIF factory station instructions, skills, hooks, and commands for issue-to-PR, PR review, and repair workflows.",
+  "author": {
+    "name": "VIF Factory",
+    "url": "https://github.com/Artastic247"
+  },
+  "homepage": "https://github.com/Artastic247/vif-automation-system",
+  "repository": "https://github.com/Artastic247/vif-automation-system",
+  "license": "UNLICENSED",
+  "keywords": [
+    "vif",
+    "codex",
+    "factory",
+    "automation",
+    "skills"
+  ],
+  "skills": "./.codex/skills/",
+  "hooks": "./.codex/hooks/",
+  "interface": {
+    "displayName": "VIF Codex Agent Pack",
+    "shortDescription": "Run VIF factory workflows",
+    "longDescription": "VIF Codex Agent Pack provides controlled operating instructions, skills, hooks, and command runbooks for repeatable issue-to-PR execution, deterministic PR review, and scoped repair loops while preserving human merge authority.",
+    "developerName": "VIF Factory",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/Artastic247/vif-automation-system",
+    "defaultPrompt": [
+      "Run AUTO-001 for this issue.",
+      "Review this PR with AUTO-002.",
+      "Repair this HOLD with AUTO-003."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
