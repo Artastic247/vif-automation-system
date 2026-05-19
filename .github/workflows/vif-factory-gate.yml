@@ -1,0 +1,168 @@
+name: VIF Factory Gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  required-files:
+    name: VIF required-file gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify required factory controls
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            "AGENTS.md"
+            ".github/PULL_REQUEST_TEMPLATE.md"
+            ".github/ISSUE_TEMPLATE/agent-task.yml"
+            ".github/workflows/vif-factory-gate.yml"
+            "README.md"
+            "docs/BUILD_CONTROL.md"
+            "docs/BRANCH_PROTECTION.md"
+            "docs/KNOWN_ISSUES.md"
+            "docs/RELEASE_CHECKLIST.md"
+            "software-build-control/factory-agent-system/README.md"
+            "software-build-control/factory-agent-system/agent-roles.md"
+            "software-build-control/factory-agent-system/gate-model.md"
+            "software-build-control/factory-agent-system/codex-pr-flow.md"
+            "software-build-control/factory-agent-system/lessons-learned-feedback.md"
+            "software-build-control/factory-agent-system/templates/AGENTS.template.md"
+            "software-build-control/factory-agent-system/templates/BUILD_CONTROL.template.md"
+            "software-build-control/factory-agent-system/templates/KNOWN_ISSUES.template.md"
+            "software-build-control/factory-agent-system/templates/PULL_REQUEST_TEMPLATE.template.md"
+            "software-build-control/factory-agent-system/templates/RELEASE_CHECKLIST.template.md"
+            "software-build-control/factory-agent-system/templates/agent-task.template.yml"
+            "software-build-control/factory-agent-system/templates/ci.template.yml"
+          )
+
+          missing=0
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "Missing required file: $file"
+              missing=1
+            else
+              echo "Found: $file"
+            fi
+          done
+
+          if [[ "$missing" -ne 0 ]]; then
+            echo "VIF required-file gate failed."
+            exit 1
+          fi
+
+          echo "VIF required-file gate passed."
+
+  repository-guard:
+    name: Repository guard
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Block common sensitive file patterns
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          blocked_patterns=(
+            "*.pem"
+            "*.p12"
+            "*.pfx"
+            ".env"
+            ".env.*"
+          )
+
+          found=0
+          for pattern in "${blocked_patterns[@]}"; do
+            while IFS= read -r file; do
+              if [[ -n "$file" ]]; then
+                echo "Blocked file pattern: $file"
+                found=1
+              fi
+            done < <(find . -type f -name "$pattern" -not -path "./.git/*")
+          done
+
+          if [[ "$found" -ne 0 ]]; then
+            echo "Repository guard failed. Remove blocked files or use an approved safer mechanism."
+            exit 1
+          fi
+
+          echo "Repository guard passed."
+
+  optional-node-checks:
+    name: Optional Node checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node when package exists
+        if: hashFiles('package.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Node dependencies when package exists
+        if: hashFiles('package.json') != ''
+        run: |
+          if [[ -f package-lock.json ]]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Typecheck when package exists
+        if: hashFiles('package.json') != ''
+        run: npm run typecheck --if-present
+
+      - name: Lint when package exists
+        if: hashFiles('package.json') != ''
+        run: npm run lint --if-present
+
+      - name: Test when package exists
+        if: hashFiles('package.json') != ''
+        run: npm test --if-present
+
+      - name: Build when package exists
+        if: hashFiles('package.json') != ''
+        run: npm run build --if-present
+
+      - name: No Node package present
+        if: hashFiles('package.json') == ''
+        run: echo "No package.json present; Node checks not applicable."
+
+  optional-python-checks:
+    name: Optional Python checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python when Python project exists
+        if: hashFiles('pyproject.toml', 'requirements.txt') != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies when requirements exist
+        if: hashFiles('requirements.txt') != ''
+        run: pip install -r requirements.txt
+
+      - name: Run pytest when tests exist
+        if: hashFiles('tests/**/*.py') != ''
+        run: pytest
+
+      - name: No Python tests present
+        if: hashFiles('tests/**/*.py') == ''
+        run: echo "No Python tests detected; Python test check not applicable."
