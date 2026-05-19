@@ -33,7 +33,6 @@ jobs:
   run:
     name: AUTO-001: issue-to-PR execution loop
     runs-on: ubuntu-latest
-    environment: github-actions
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -104,8 +103,8 @@ jobs:
           gh pr create \
             --base main \
             --head "$BRANCH_NAME" \
-            --title "AUTO-001: Add issue-to-PR automation execution loop" \
-            --body "This PR was created by the AUTO-001 automation execution workflow.\n\n- workflow_dispatch only\n- branch/PR creation automated\n- expected-file scope check included\n- generated reports rejected\n- no auto-merge\n- human merge required\n- only implementation files changed"
+            --title "AUTO: Issue #${ISSUE_NUMBER} doc-control update - ${SHORT_TASK_NAME}" \
+            --body "This PR was created by the AUTO-001 automation execution workflow.\n\nIssue: #${ISSUE_NUMBER}\nTask class: ${TASK_CLASS}\nShort task name: ${SHORT_TASK_NAME}\nBranch: ${BRANCH_NAME}\n\nControls confirmed by workflow:\n- workflow_dispatch only\n- branch/PR creation automated\n- expected-file scope check included\n- generated reports rejected\n- no auto-merge\n- human merge required\n\nExpected files:\n$(cat expected_sorted.txt)"
 
       - name: Upload evidence artifact
         uses: actions/upload-artifact@v4
