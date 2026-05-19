@@ -27,6 +27,14 @@ AUTO_002_COVERAGE_PATTERNS = (
     "software-build-control/scripts/auto_pr_review.py",
 )
 
+AUTO_003_FACTORY_MEMORY_PATTERNS = (
+    ".codex/AGENTS.md",
+    ".github/workflows/factory-memory-ingest.yml",
+    "factory-memory/**",
+    "software-build-control/scripts/auto_pr_review.py",
+    "software-build-control/scripts/factory_memory_ingest.py",
+)
+
 FORBIDDEN_PATTERNS = (
     ".github/workflows/**",
     "software-build-control/reports/**",
@@ -76,6 +84,8 @@ def matches_any(path: str, patterns: Sequence[str]) -> bool:
 def review_profile(head_branch: str) -> tuple[str, tuple[str, ...], str]:
     if head_branch.startswith("codex-plugin-"):
         return "Codex plugin pack", PLUGIN_PACK_PATTERNS, "Head branch uses codex-plugin- prefix"
+    if head_branch.startswith("auto-issue-") and "auto-003" in head_branch and "factory-memory" in head_branch:
+        return "AUTO-003 factory memory pipeline", AUTO_003_FACTORY_MEMORY_PATTERNS, "Head branch uses controlled AUTO-003 factory-memory prefix"
     if head_branch.startswith("auto-issue-") and "auto-002" in head_branch and "coverage" in head_branch:
         return "AUTO-002 coverage repair", AUTO_002_COVERAGE_PATTERNS, "Head branch uses controlled AUTO-002 coverage prefix"
     if head_branch.startswith("auto-issue-"):
