@@ -1,0 +1,170 @@
+name: VIF Factory Auto Merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to evaluate for guarded auto-merge.
+        required: true
+        type: string
+  schedule:
+    - cron: '*/5 * * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  checks: read
+
+concurrency:
+  group: factory-auto-merge-${{ github.event.issue.number || github.event.pull_request.number || github.event.inputs.pr_number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  guarded-auto-merge:
+    if: >-
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.draft == false) ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/factory-auto-merge'))
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.VIF_FACTORY_TOKEN || github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number || '' }}
+          INPUT_PR_NUMBER: ${{ github.event.inputs.pr_number || '' }}
+        run: |
+          set -euo pipefail
+
+          gh label create factory-auto-merge \
+            --color 5319e7 \
+            --description "Eligible for guarded VIF factory auto-merge" >/dev/null 2>&1 || true
+
+          PR_NUMBER=""
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            PR_NUMBER=$(gh pr list \
+              --state open \
+              --label factory-auto-merge \
+              --limit 10 \
+              --json number \
+              --jq '.[0].number // ""')
+          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            PR_NUMBER="${INPUT_PR_NUMBER:-}"
+          else
+            PR_NUMBER="${EVENT_PR_NUMBER:-}"
+          fi
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No PR to evaluate for guarded auto-merge."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          HAS_LABEL=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | grep -Fx "factory-auto-merge" || true)
+          if [ -z "$HAS_LABEL" ] && [ "$EVENT_NAME" != "workflow_dispatch" ] && [ "$EVENT_NAME" != "issue_comment" ]; then
+            echo "PR #$PR_NUMBER does not have factory-auto-merge label; skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] || [ "$EVENT_NAME" = "issue_comment" ]; then
+            gh pr edit "$PR_NUMBER" --add-label factory-auto-merge || true
+          fi
+
+          TITLE=$(gh pr view "$PR_NUMBER" --json title --jq '.title')
+          HEAD_BRANCH=$(gh pr view "$PR_NUMBER" --json headRefName --jq '.headRefName')
+          HEAD_SHA=$(gh pr view "$PR_NUMBER" --json headRefOid --jq '.headRefOid')
+          IS_DRAFT=$(gh pr view "$PR_NUMBER" --json isDraft --jq '.isDraft')
+
+          gh pr diff "$PR_NUMBER" --name-only > changed_files.txt
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate --jq '.[].body' > pr_comments.txt
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "head_branch=$HEAD_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "is_draft=$IS_DRAFT" >> "$GITHUB_OUTPUT"
+          {
+            echo "title<<EOF"
+            echo "$TITLE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run auto-merge guard
+        if: steps.pr.outputs.skip != 'true'
+        id: guard
+        run: |
+          set +e
+          python software-build-control/scripts/factory_auto_merge_guard.py \
+            --pr-number "${{ steps.pr.outputs.pr_number }}" \
+            --title "${{ steps.pr.outputs.title }}" \
+            --head-branch "${{ steps.pr.outputs.head_branch }}" \
+            --is-draft "${{ steps.pr.outputs.is_draft }}" \
+            --changed-files-file changed_files.txt \
+            --comments-file pr_comments.txt \
+            --output-file factory_auto_merge_guard.md
+          STATUS=$?
+          set -e
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Request auto-merge
+        if: steps.pr.outputs.skip != 'true' && steps.guard.outputs.status == '0'
+        env:
+          GH_TOKEN: ${{ secrets.VIF_FACTORY_TOKEN || github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+          HEAD_SHA: ${{ steps.pr.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+
+          gh pr comment "$PR_NUMBER" --body-file factory_auto_merge_guard.md
+          if gh pr merge "$PR_NUMBER" --auto --squash --delete-branch --match-head-commit "$HEAD_SHA"; then
+            gh pr comment "$PR_NUMBER" --body "Factory auto-merge requested. GitHub will merge this PR when repository merge requirements are satisfied."
+          else
+            gh pr edit "$PR_NUMBER" --remove-label factory-auto-merge || true
+            gh pr comment "$PR_NUMBER" --body "Factory auto-merge could not be enabled. Confirm repository Settings -> General -> Pull Requests -> Allow auto-merge is enabled, and that branch protection allows auto-merge after required checks pass."
+            exit 1
+          fi
+
+      - name: Leave pending
+        if: steps.pr.outputs.skip != 'true' && steps.guard.outputs.status == '2'
+        run: |
+          echo "Factory auto-merge is pending; AUTO-002 PASS is not present yet."
+
+      - name: Hold auto-merge
+        if: steps.pr.outputs.skip != 'true' && steps.guard.outputs.status == '1'
+        env:
+          GH_TOKEN: ${{ secrets.VIF_FACTORY_TOKEN || github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+
+          gh pr edit "$PR_NUMBER" --remove-label factory-auto-merge || true
+          gh pr comment "$PR_NUMBER" --body-file factory_auto_merge_guard.md
+          echo "Factory auto-merge held for PR #$PR_NUMBER."
+
+      - name: Upload guard artifact
+        if: steps.pr.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: factory-auto-merge-guard
+          path: factory_auto_merge_guard.md
