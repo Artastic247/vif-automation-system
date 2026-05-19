@@ -19,6 +19,9 @@ Item evidence, audit results, owner review, risk status.
 ## Outputs/records
 Controlled maturity record.
 
+## Audit criteria
+Assessment criteria require each register entry to identify the evidence, missing evidence, audit frequency, automation permission and gate decision.
+
 ## Linked process
 Clause 9 performance evaluation.
 
@@ -30,6 +33,9 @@ Artefact, records, audit evidence, improvement evidence.
 
 ## MLA / maturity dependency
 Current level controls permission.
+
+## Management-review input
+Register trends, overdue reviews, downgrades, blocked items and automation-permission conflicts feed management review.
 
 ## PASS/HOLD/BLOCKED rules
 PASS when evidence exists. HOLD when evidence is partial. BLOCKED when maturity is claimed without evidence.

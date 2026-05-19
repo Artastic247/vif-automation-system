@@ -26,7 +26,7 @@ Only generated factory-memory output PRs are eligible.
 | Review | PR discussion contains `AUTO-002 Review Result: PASS` |
 | Draft state | PR is not draft |
 | Changed files | Generated factory-memory output paths only |
-| Merge method | GitHub auto-merge requested with squash merge |
+| Merge method | GitHub auto-merge requested with squash merge, or immediate guarded squash merge when GitHub reports the PR is already in clean status |
 
 ## Allowed changed files
 
@@ -68,6 +68,7 @@ The workflow must:
 3. Collect title, branch, draft state, changed files, and PR comments.
 4. Run `software-build-control/scripts/factory_auto_merge_guard.py`.
 5. Request GitHub auto-merge only when the guard returns PASS.
+5a. If GitHub reports the PR is already in clean status, perform the same guarded squash merge immediately with head SHA matching.
 6. Leave PENDING when AUTO-002 PASS has not appeared yet.
 7. Remove the label and comment HOLD when the guard fails.
 

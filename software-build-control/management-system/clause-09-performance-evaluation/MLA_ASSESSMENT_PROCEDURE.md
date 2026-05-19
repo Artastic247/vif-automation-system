@@ -18,6 +18,9 @@ Assess item against M0-M5, verify evidence, identify gaps, set audit frequency, 
 ## Outputs/records
 MLA assessment record, maturity decision, upgrade/downgrade actions.
 
+## Audit criteria
+Assessment criteria must map the claimed maturity level to objective evidence, audit results, risk and automation permission.
+
 ## Linked process
 Clause 9 performance evaluation.
 
@@ -29,6 +32,9 @@ Current artefact, use evidence, audit evidence, KPI/issue evidence where applica
 
 ## MLA / maturity dependency
 Automation requires maturity permission from MLA matrix.
+
+## Management-review input
+Assessment trends, blocked maturity decisions, repeated HOLD results and automation-permission conflicts feed management review.
 
 ## PASS/HOLD/BLOCKED rules
 PASS if evidence supports maturity. HOLD if evidence is incomplete. BLOCKED if maturity is overstated or automation is requested before maturity permits it.

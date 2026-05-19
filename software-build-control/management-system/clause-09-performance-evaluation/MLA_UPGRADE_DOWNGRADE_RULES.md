@@ -15,6 +15,9 @@ Current maturity record, evidence matrix, audit findings, RCA/CAPA records, vali
 ## Activities/method
 Upgrade only when required evidence exists. Downgrade when evidence fails, audit finding is raised, repeat failure occurs, validator false PASS occurs, automation exceeds permission, or CAPA is ineffective.
 
+## Outputs/records
+Upgrade decision, downgrade decision, evidence link, approval record and audit finding or CAPA reference where applicable.
+
 ## Audit criteria
 Evidence must support the level claimed. No claim may exceed available evidence.
 

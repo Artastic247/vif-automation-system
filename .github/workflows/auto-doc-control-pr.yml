@@ -31,7 +31,7 @@ permissions:
 
 jobs:
   run:
-    name: AUTO-001: issue-to-PR execution loop
+    name: "AUTO-001: issue-to-PR execution loop"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main

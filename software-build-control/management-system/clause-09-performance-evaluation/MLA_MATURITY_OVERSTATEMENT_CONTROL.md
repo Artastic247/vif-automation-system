@@ -15,6 +15,9 @@ Claimed maturity/readiness, evidence matrix, audit record, validation report, so
 ## Activities/method
 Compare claim to evidence. Classify unsupported claim. Downgrade if needed. Open NC/RCA/CAPA when the claim enabled or could enable unsafe work.
 
+## Outputs/records
+Overstatement decision record, downgrade action, NC/RCA/CAPA reference and management-review escalation where required.
+
 ## Audit criteria
 No maturity or compliance claim is valid without evidence. Standards interpretation requires SOURCE REQUIRED or CUSTOMER SOURCE REQUIRED when source is not supplied.
 

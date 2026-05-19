@@ -1,1 +1,15 @@
+name: VIF Main Workflow Health
 
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    name: main-workflow-health
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm workflow is loadable
+        run: echo "VIF main workflow is configured."

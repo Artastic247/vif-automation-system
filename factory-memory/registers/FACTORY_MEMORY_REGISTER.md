@@ -52,7 +52,9 @@ The processed label is applied only after a memory-ingest PR is opened. The auto
 ## Observability rules
 
 - Each active ingest run comments on the source issue with the workflow run URL.
-- Existing open ingest PRs are detected before a new branch is created.
+- Issues already marked `factory-memory-ingested` are skipped before a new branch is created unless a maintainer removes that marker for an intentional rerun.
+- For already processed issues, historical ingest PRs are detected before a new branch is created.
+- For active ingest attempts, open ingest PRs are detected before a new branch is created.
 - If a memory PR is opened by the workflow, the workflow also runs an inline AUTO-002 review and comments the result on the PR.
 - Inline AUTO-002 is required because GitHub may suppress chained workflow triggers when a PR is created by the default workflow token.
 - The auto-merge workflow comments a PASS, PENDING, or HOLD guard report on the PR when it acts on the PR.

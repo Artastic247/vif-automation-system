@@ -122,6 +122,24 @@ jobs:
 
           ISSUE_TITLE=$(gh issue view "$ISSUE_NUMBER" --json title --jq '.title')
           gh issue view "$ISSUE_NUMBER" --json body --jq '.body // ""' > issue_body.md
+
+          PROCESSED_LABEL=$(gh issue view "$ISSUE_NUMBER" --json labels --jq '.labels[].name' | grep -Fx "factory-memory-ingested" || true)
+          if [ -n "$PROCESSED_LABEL" ]; then
+            PROCESSED_PR_URL=$(gh pr list \
+              --state all \
+              --search "\"AUTO: Issue #${ISSUE_NUMBER} - Factory memory ingest\" in:title" \
+              --json url \
+              --jq '.[0].url // ""')
+            if [ -n "$PROCESSED_PR_URL" ]; then
+              gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest already marked issue as processed: ${PROCESSED_PR_URL}" || true
+              echo "existing_pr_url=$PROCESSED_PR_URL" >> "$GITHUB_OUTPUT"
+            else
+              gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest already marked issue as processed. Remove the factory-memory-ingested label before an intentional rerun." || true
+            fi
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest run started: ${RUN_URL}" || true
 
           EXISTING_PR_URL=$(gh pr list \
@@ -131,7 +149,7 @@ jobs:
             --jq '.[0].url // ""')
           if [ -n "$EXISTING_PR_URL" ]; then
             gh issue edit "$ISSUE_NUMBER" --add-label factory-memory-ingested || true
-            gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest already has an open PR: ${EXISTING_PR_URL}" || true
+            gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest already has a PR: ${EXISTING_PR_URL}" || true
             echo "skip=true" >> "$GITHUB_OUTPUT"
             echo "existing_pr_url=$EXISTING_PR_URL" >> "$GITHUB_OUTPUT"
             exit 0

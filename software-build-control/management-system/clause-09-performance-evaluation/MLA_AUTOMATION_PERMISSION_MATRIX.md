@@ -22,6 +22,9 @@ Maturity level, audit status, risk, rollback/disable route, owner approval.
 | M4 | Limited automation | Required | Report routing | Auto-merge/release |
 | M5 | Automation candidate | Governance approval | Mature orchestration | Uncontrolled change |
 
+## Outputs/records
+Automation permission decision, approval record, rollback route and blocked-permission record where applicable.
+
 ## Audit criteria
 Automation must never exceed maturity permission.
 
