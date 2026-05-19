@@ -3,6 +3,41 @@
 ## Current mode
 Linked dry-run (target state: evidence-backed limited automation).
 
+## Current maturity status
+
+Current maturity:
+
+```text
+Level 3.2 — Governed Controlled Automation
+```
+
+Verified:
+
+- issue-driven dry-run
+- artifact handoff
+- documentation PR-write
+- single-file runtime mutation
+- multi-file runtime/control propagation
+- readiness decision propagation
+- human merge authority
+
+Next gate:
+
+```text
+M7 — first product-line dry-run
+```
+
+Still prohibited:
+
+- auto-merge
+- broad autonomous repair
+- generated reports as source
+- app repo mutation
+- Supabase/RLS
+- deployment
+- n8n orchestration
+- customer data access
+
 ## Control links
 - Open app-build issues: saved GitHub issue query for route-labelled app-build items.
 - In-flight app-build PRs: saved GitHub PR query filtered to `software-build-control/**` changes.
