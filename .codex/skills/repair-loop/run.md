@@ -24,12 +24,15 @@
 ```bash
 git remote -v
 git fetch origin --prune
-gh pr checkout ${PR_NUMBER}
+BASE_BRANCH=$(gh pr view "${PR_NUMBER}" --json baseRefName --jq .baseRefName)
+test "${BASE_BRANCH}" = "main"
+gh pr checkout "${PR_NUMBER}"
 git status --short
+git merge-base --is-ancestor origin/main HEAD
 git diff --name-only origin/main...HEAD
 ```
 
-Stop if the PR cannot be checked out, the workspace is dirty before repair, the target is not `main`, or the changed-file list already exceeds `EXPECTED_FILES`.
+Stop if the PR cannot be checked out, the PR target branch is not `main`, the workspace is dirty before repair, the branch does not contain current `origin/main`, or the changed-file list already exceeds `EXPECTED_FILES`.
 
 ## Diagnose
 
@@ -47,6 +50,7 @@ Make only the minimum required edit. Do not add generated reports. Do not perfor
 ```bash
 git diff --name-only origin/main...HEAD
 git diff --check origin/main...HEAD
+gh pr view "${PR_NUMBER}" --json title,body,baseRefName,headRefName
 git status --short
 ```
 
