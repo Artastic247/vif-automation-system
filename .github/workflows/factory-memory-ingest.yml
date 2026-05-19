@@ -16,23 +16,31 @@ on:
         required: false
         default: ingest
         type: string
+  repository_dispatch:
+    types: [factory-memory-ingest]
   issues:
     types: [labeled]
   issue_comment:
     types: [created]
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'
 
 permissions:
   contents: write
   pull-requests: write
   issues: write
+  actions: read
+
+concurrency:
+  group: factory-memory-ingest-${{ github.event.issue.number || github.event.inputs.issue_number || github.event.client_payload.issue_number || github.run_id }}
+  cancel-in-progress: false
 
 jobs:
   ingest:
     if: >-
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'repository_dispatch' ||
       (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.issue.pull_request == null && github.event.label.name == 'factory-memory-ingest') ||
       (github.event_name == 'issue_comment' && github.event.action == 'created' && github.event.issue.pull_request == null && startsWith(github.event.comment.body, '/factory-memory ingest'))
     runs-on: ubuntu-latest
@@ -52,12 +60,16 @@ jobs:
       - name: Resolve source
         id: source
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.VIF_FACTORY_TOKEN || github.token }}
           EVENT_NAME: ${{ github.event_name }}
           EVENT_ISSUE_NUMBER: ${{ github.event.issue.number || '' }}
           INPUT_FILE: ${{ github.event.inputs.input_file || '' }}
           ISSUE_NUMBER_INPUT: ${{ github.event.inputs.issue_number || '' }}
           SHORT_TASK_NAME_INPUT: ${{ github.event.inputs.short_task_name || 'ingest' }}
+          DISPATCH_INPUT_FILE: ${{ github.event.client_payload.input_file || '' }}
+          DISPATCH_ISSUE_NUMBER: ${{ github.event.client_payload.issue_number || '' }}
+          DISPATCH_SHORT_TASK_NAME: ${{ github.event.client_payload.short_task_name || 'dispatch-ingest' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
 
@@ -68,6 +80,9 @@ jobs:
           gh label create factory-memory-ingested \
             --color 0e8a16 \
             --description "Factory memory ingest PR created" >/dev/null 2>&1 || true
+          gh label create factory-auto-merge \
+            --color 5319e7 \
+            --description "Eligible for guarded VIF factory auto-merge" >/dev/null 2>&1 || true
 
           if [ "$EVENT_NAME" = "schedule" ]; then
             PENDING_JSON=$(gh issue list \
@@ -83,6 +98,10 @@ jobs:
               echo "skip=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
+          elif [ "$EVENT_NAME" = "repository_dispatch" ]; then
+            INPUT_FILE="${DISPATCH_INPUT_FILE:-}"
+            ISSUE_NUMBER="${DISPATCH_ISSUE_NUMBER:-}"
+            SHORT_TASK_NAME="${DISPATCH_SHORT_TASK_NAME:-dispatch-ingest}"
           elif [ "$EVENT_NAME" != "workflow_dispatch" ]; then
             INPUT_FILE=""
             ISSUE_NUMBER="${EVENT_ISSUE_NUMBER:-}"
@@ -103,6 +122,20 @@ jobs:
 
           ISSUE_TITLE=$(gh issue view "$ISSUE_NUMBER" --json title --jq '.title')
           gh issue view "$ISSUE_NUMBER" --json body --jq '.body // ""' > issue_body.md
+          gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest run started: ${RUN_URL}" || true
+
+          EXISTING_PR_URL=$(gh pr list \
+            --state open \
+            --search "\"AUTO: Issue #${ISSUE_NUMBER} - Factory memory ingest\" in:title" \
+            --json url \
+            --jq '.[0].url // ""')
+          if [ -n "$EXISTING_PR_URL" ]; then
+            gh issue edit "$ISSUE_NUMBER" --add-label factory-memory-ingested || true
+            gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest already has an open PR: ${EXISTING_PR_URL}" || true
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "existing_pr_url=$EXISTING_PR_URL" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           SAFE_TASK=$(echo "$SHORT_TASK_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//')
           if [ -z "$SAFE_TASK" ]; then
@@ -152,6 +185,10 @@ jobs:
       - name: Commit memory outputs
         if: steps.source.outputs.skip != 'true'
         id: commit
+        env:
+          GH_TOKEN: ${{ secrets.VIF_FACTORY_TOKEN || github.token }}
+          ISSUE_NUMBER: ${{ steps.source.outputs.issue_number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
 
@@ -162,6 +199,7 @@ jobs:
 
           if git diff --cached --quiet; then
             echo "committed=false" >> "$GITHUB_OUTPUT"
+            gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest run completed with no new memory output changes: ${RUN_URL}" || true
             exit 0
           fi
 
@@ -171,37 +209,82 @@ jobs:
 
       - name: Open memory ingest PR
         if: steps.source.outputs.skip != 'true' && steps.commit.outputs.committed == 'true'
+        id: pr
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.VIF_FACTORY_TOKEN || github.token }}
+          ISSUE_NUMBER: ${{ steps.source.outputs.issue_number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          set -euo pipefail
+
+          cat > pr_body.md <<'EOF'
+          ## Summary
+
+          Deterministic AUTO-003 factory memory ingest.
+
+          ## Controls
+
+          - workflow_dispatch only
+          - repository_dispatch supported for approved external factory orchestrators
+          - issue label trigger: factory-memory-ingest
+          - issue comment trigger: /factory-memory ingest
+          - scheduled poller fallback
+          - expected-file scope check
+          - no auto-merge outside the guarded generated-memory route
+          - factory-auto-merge label is required before GitHub auto-merge is requested
+          - GitHub main is source of truth
+          - one issue = one branch = one PR
+          - generated reports are artifacts, not source payloads
+
+          ## Scope
+
+          Changed files are limited to factory-memory outputs generated from the approved ingest source.
+
+          ## Gate
+
+          AUTO-002 may recommend PASS or HOLD. Generated memory PRs may request guarded auto-merge only after AUTO-002 PASS and file-scope validation.
+          EOF
+
+          sed -i 's/^          //' pr_body.md
+
           PR_URL=$(gh pr create \
             --base main \
             --head "${{ steps.source.outputs.branch }}" \
-            --title "AUTO: Issue #${{ steps.source.outputs.issue_number }} - Factory memory ingest" \
-            --body "## Summary
+            --title "AUTO: Issue #${ISSUE_NUMBER} - Factory memory ingest" \
+            --body-file pr_body.md)
+          PR_NUMBER="${PR_URL##*/}"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
 
-Deterministic AUTO-003 factory memory ingest.
+          gh issue edit "$ISSUE_NUMBER" --add-label factory-memory-ingested || true
+          gh pr edit "$PR_NUMBER" --add-label factory-auto-merge || true
+          gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest PR opened: ${PR_URL}\n\nRun: ${RUN_URL}\n\nGuarded auto-merge label applied to the PR." || true
 
-## Controls
+      - name: Run inline AUTO-002 review
+        if: steps.source.outputs.skip != 'true' && steps.commit.outputs.committed == 'true' && steps.pr.outputs.pr_number != ''
+        env:
+          GH_TOKEN: ${{ secrets.VIF_FACTORY_TOKEN || github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+          ISSUE_NUMBER: ${{ steps.source.outputs.issue_number }}
+          HEAD_BRANCH: ${{ steps.source.outputs.branch }}
+        run: |
+          set -euo pipefail
 
-- workflow_dispatch only
-- issue label trigger: factory-memory-ingest
-- issue comment trigger: /factory-memory ingest
-- scheduled poller fallback
-- expected-file scope check
-- no auto-merge
-- human merge required
-- GitHub main is source of truth
-- one issue = one branch = one PR
-- generated reports are artifacts, not source payloads
+          gh pr view "$PR_NUMBER" --json body --jq .body > pr_body.txt
+          gh pr diff "$PR_NUMBER" --name-only > changed_files.txt
+          python software-build-control/scripts/auto_pr_review.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --pr-number "$PR_NUMBER" \
+            --head-branch "$HEAD_BRANCH" \
+            --title "AUTO: Issue #${ISSUE_NUMBER} - Factory memory ingest" \
+            --body-file pr_body.txt \
+            --changed-files-file changed_files.txt \
+            --output-file auto_pr_review_result.md
+          gh pr comment "$PR_NUMBER" --body-file auto_pr_review_result.md
 
-## Scope
-
-Changed files are limited to factory-memory outputs generated from the approved ingest source.
-
-## Gate
-
-AUTO-002 may recommend PASS or HOLD. Human merge authority remains mandatory.")
-
-          gh issue edit "${{ steps.source.outputs.issue_number }}" --add-label factory-memory-ingested || true
-          gh issue comment "${{ steps.source.outputs.issue_number }}" --body "Factory memory ingest PR opened: ${PR_URL}"
+      - name: Upload inline review artifact
+        if: steps.source.outputs.skip != 'true' && steps.commit.outputs.committed == 'true' && steps.pr.outputs.pr_number != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-pr-review-result
+          path: auto_pr_review_result.md
