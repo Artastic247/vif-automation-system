@@ -1,14 +1,13 @@
 ---
-id: repair-loop
 name: AUTO-003 Repair Loop
-trigger:
-  - AUTO-002 returns HOLD
-  - CI validation fails on scoped PR
-  - operator requests repair of failing automation
-purpose: Repair failing scoped automation without broadening scope or merging automatically.
+description: Use when AUTO-002 returns HOLD or validation fails on a scoped pull request and Codex must make a narrow repair without broadening scope or merging automatically.
 ---
 
 # AUTO-003 Repair Loop
+
+## Metadata
+- id: repair-loop
+- triggers: AUTO-002 returns HOLD, CI validation fails on scoped PR, operator requests repair of failing automation
 
 ## Purpose
 Repair a scoped PR after AUTO-002 returns `HOLD` or validation fails, while preserving the one issue, one branch, one PR route.
@@ -51,6 +50,8 @@ Repair a scoped PR after AUTO-002 returns `HOLD` or validation fails, while pres
 - repair requires generated report commit
 - changed files exceed declared scope
 - PR branch cannot be confirmed
+- PR does not target `main`
+- branch does not contain current `origin/main`
 - rollback path is missing
 
 ## Outputs
