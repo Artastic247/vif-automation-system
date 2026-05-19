@@ -32,7 +32,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: factory-memory-ingest-${{ github.event.issue.number || github.event.inputs.issue_number || github.event.client_payload.issue_number || github.run_id }}
+  group: factory-memory-ingest
   cancel-in-progress: false
 
 jobs:
@@ -235,6 +235,7 @@ jobs:
           - GitHub main is source of truth
           - one issue = one branch = one PR
           - generated reports are artifacts, not source payloads
+          - human merge required for control-plane changes; generated memory PRs may use the guarded auto-merge route only after AUTO-002 PASS and required checks pass
 
           ## Scope
 
