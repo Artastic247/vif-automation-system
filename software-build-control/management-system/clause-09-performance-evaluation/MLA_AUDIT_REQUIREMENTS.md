@@ -15,6 +15,9 @@ MLA record, risk level, prior findings, automation exposure, customer/data impac
 ## Activities/method
 M0/M1 require gap review. M2 requires pilot audit. M3 requires scheduled audit. M4 requires KPI/effectiveness audit. M5 requires risk-based audit and automation review.
 
+## Outputs/records
+Audit requirement decision, audit frequency assignment, audit programme entry and audit coverage gap record.
+
 ## Audit criteria
 Audit frequency must match maturity, risk, and exposure.
 

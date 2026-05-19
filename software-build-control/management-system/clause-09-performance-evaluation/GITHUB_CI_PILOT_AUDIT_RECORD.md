@@ -13,13 +13,13 @@ GitHub CI Controller and Internal Audit Specialist.
 Workflow templates, validation scripts, permissions configuration and validation reports.
 
 ## Activities/method
-Review workflow path, trigger type, permissions, validation command, artifact/report handling, rollback/disable route and prohibited automation boundaries.
+Review workflow path, trigger type, permissions, validation command, artifact/report handling, rollback/disable route, app-repo CI boundary and prohibited automation boundaries.
 
 ## Outputs/records
 GitHub CI pilot audit record and gate decision.
 
 ## Audit criteria
-Pilot must remain manual, read-only and control-system-only. No deploy, auto-fix, auto-merge, auto-release or app-repo activation allowed.
+Pilot must remain manual, read-only and control-system-only. No deploy, auto-fix, auto-merge, auto-release, app-repo CI, or app-repo activation allowed.
 
 ## Evidence required
 Workflow files, run evidence, permission settings and validation reports.

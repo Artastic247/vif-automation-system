@@ -25,6 +25,9 @@ Maturity definition and controlled item type.
 ## Outputs/records
 Evidence matrix.
 
+## Audit criteria
+Evidence criteria require each maturity level to have objective evidence that matches the claimed level and permitted automation.
+
 ## Linked process
 Clause 9 MLA.
 
@@ -36,6 +39,9 @@ Per item type and level.
 
 ## MLA / maturity dependency
 All readiness claims depend on this matrix.
+
+## Management-review input
+Evidence gaps, maturity-level changes and repeated missing-evidence patterns feed management review.
 
 ## PASS/HOLD/BLOCKED rules
 PASS when evidence meets level. HOLD when partial. BLOCKED when level claimed above evidence.

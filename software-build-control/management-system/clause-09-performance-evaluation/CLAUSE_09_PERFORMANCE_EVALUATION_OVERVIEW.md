@@ -15,6 +15,9 @@ KPIs, validation reports, audits, incidents, RCA/CAPA, MLA records, release reco
 ## Activities/method
 Monitor, measure, analyse, evaluate, audit, assess maturity, classify findings, feed management review and continual improvement.
 
+## Outputs/records
+Performance-evaluation summary, audit outputs, MLA decision records, management-review inputs and improvement actions.
+
 ## Audit criteria
 Use approved procedures, job cards, evidence registers, risk controls and standards lenses only. Do not claim certification or compliance.
 

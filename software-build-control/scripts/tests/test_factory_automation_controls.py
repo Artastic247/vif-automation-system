@@ -143,6 +143,7 @@ class FactoryAutomationControlTests(unittest.TestCase):
         self.assertIn('".github/workflows/control-pack-validate.yml"', script)
         self.assertIn('".github/workflows/auto-doc-control-pr.yml"', script)
         self.assertIn('".github/workflows/app-build-validate.yml"', script)
+        self.assertIn('"software-build-control/management-system/clause-09-performance-evaluation/**"', script)
 
     def test_workflow_files_have_loadable_triggers_and_indented_heredocs(self) -> None:
         main_workflow = (REPO_ROOT / ".github/workflows/main.yml").read_text(encoding="utf-8")

@@ -59,6 +59,7 @@ AUTO_006_FACTORY_AUTOMATION_COMPLETION_PATTERNS = (
     ".github/workflows/factory-memory-ingest.yml",
     ".github/workflows/main.yml",
     "factory-memory/registers/**",
+    "software-build-control/management-system/clause-09-performance-evaluation/**",
     "software-build-control/scripts/auto_pr_review.py",
     "software-build-control/scripts/factory_auto_merge_guard.py",
     "software-build-control/scripts/tests/**",
