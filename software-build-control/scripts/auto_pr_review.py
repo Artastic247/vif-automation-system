@@ -195,7 +195,7 @@ def build_review(args: argparse.Namespace) -> tuple[str, bool]:
     if changed_files:
         lines.extend([f"- `{path}`" for path in changed_files])
     else:
-        lines.append("- `(none)")
+        lines.append("- `(none)`")
 
     lines.extend(["", "## Checks passed", ""])
     if checks_passed:
