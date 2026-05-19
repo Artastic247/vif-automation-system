@@ -137,11 +137,21 @@ jobs:
           set -euo pipefail
 
           gh pr comment "$PR_NUMBER" --body-file factory_auto_merge_guard.md
-          if gh pr merge "$PR_NUMBER" --auto --squash --delete-branch --match-head-commit "$HEAD_SHA"; then
+          MERGE_OUTPUT=$(mktemp)
+          if gh pr merge "$PR_NUMBER" --auto --squash --delete-branch --match-head-commit "$HEAD_SHA" >"$MERGE_OUTPUT" 2>&1; then
             gh pr comment "$PR_NUMBER" --body "Factory auto-merge requested. GitHub will merge this PR when repository merge requirements are satisfied."
+          elif grep -qi "clean status" "$MERGE_OUTPUT"; then
+            if gh pr merge "$PR_NUMBER" --squash --delete-branch --match-head-commit "$HEAD_SHA"; then
+              gh pr comment "$PR_NUMBER" --body "Factory guarded merge completed immediately because GitHub reported the PR was already in clean status."
+            else
+              gh pr edit "$PR_NUMBER" --remove-label factory-auto-merge || true
+              gh pr comment "$PR_NUMBER" --body "Factory guarded merge fallback failed after GitHub reported clean status. Confirm required checks and branch rules, then rerun /factory-auto-merge."
+              exit 1
+            fi
           else
             gh pr edit "$PR_NUMBER" --remove-label factory-auto-merge || true
             gh pr comment "$PR_NUMBER" --body "Factory auto-merge could not be enabled. Confirm repository Settings -> General -> Pull Requests -> Allow auto-merge is enabled, and that branch protection allows auto-merge after required checks pass."
+            cat "$MERGE_OUTPUT"
             exit 1
           fi
 

@@ -51,11 +51,13 @@ AUTO_005_FACTORY_MEMORY_POLLER_PATTERNS = (
 
 AUTO_006_FACTORY_AUTOMATION_COMPLETION_PATTERNS = (
     ".codex/AGENTS.md",
+    ".github/workflows/auto-pr-review.yml",
     ".github/workflows/factory-auto-merge.yml",
     ".github/workflows/factory-memory-ingest.yml",
     "factory-memory/registers/**",
     "software-build-control/scripts/auto_pr_review.py",
     "software-build-control/scripts/factory_auto_merge_guard.py",
+    "software-build-control/scripts/tests/**",
 )
 
 FORBIDDEN_PATTERNS = (
@@ -251,11 +253,18 @@ def main() -> int:
     parser.add_argument("--body-file", required=True)
     parser.add_argument("--changed-files-file", required=True)
     parser.add_argument("--output-file", required=True)
+    parser.add_argument(
+        "--fail-on-hold",
+        action="store_true",
+        help="Return exit code 1 when the deterministic review result is HOLD.",
+    )
     args = parser.parse_args()
 
-    review_markdown, _passed = build_review(args)
+    review_markdown, passed = build_review(args)
     Path(args.output_file).write_text(review_markdown, encoding="utf-8")
     print(review_markdown)
+    if args.fail_on_hold and not passed:
+        return 1
     return 0
 
 
