@@ -12,17 +12,21 @@ This register is the management-system source of truth for maturity state, verif
 |---|---|---|
 | Level 0 | Prompt chaos | Ad hoc ChatGPT/Codex use, no stable controls. |
 | Level 1 | Documented control foundation | Policies, procedures, branch rules, and basic governance exist. |
-| Level 2 | Controlled dry-run automation | Issue to router to artifact-only execution, with no source mutation. |
-| Level 3 | Governed controlled automation | Issue to branch/PR to controlled file changes to CI/artifact evidence to human merge. |
-| Level 4 | Product-line factory dry-run | Real PFMEA/SPC/Control Plan/APQP/product-line work flows through the factory in dry-run/product-line mode. |
+| Level 2 | Controlled dry-run / governed manual execution | Issue routing and artifact-only execution exist, but the operator still performs most coordination and release activity. |
+| Level 3 | Governed semi-automation | The factory has controlled issue/branch/PR rules, dry-run artifacts, readiness outputs and human release gates, but the operator still drives execution and recovery. |
+| Level 4 | Controlled product-line dry-run | Real PFMEA/SPC/Control Plan/APQP/product-line work flows through the factory in dry-run/product-line mode with reduced manual coordination. |
 | Level 5 | Limited autonomous execution | Approved task classes may execute automatically with CI gates and human release authority. |
 | Level 6 | Full autonomous factory | Broad autonomous execution with mature monitoring, rollback, provider controls, and release governance. |
 
 ## Current maturity
 
 ```text
-Level 3.2 — Governed Controlled Automation
+Level 3.2 — Governed Semi-Automation / Operator-Assisted Execution
 ```
+
+This is not controlled autonomy.
+
+The current state proves that governance controls, routing, PR discipline, artifact handling and readiness signalling exist. It does not yet prove that the factory can operate without the operator performing substantial coordination, triggering, interpretation, recovery, push and merge activity.
 
 ## Verified gates
 
@@ -50,6 +54,20 @@ Level 3.2 — Governed Controlled Automation
 - controlled related runtime/workflow propagation,
 - human merge authority.
 
+## Current operator dependency
+
+The operator still performs substantial factory work, including:
+
+- interpreting tool output,
+- triggering manual workflow steps,
+- coordinating between ChatGPT, Codex, VS Code and GitHub,
+- resolving local workspace readiness issues,
+- deciding when to push and merge,
+- checking whether branch and PR state is correct,
+- recovering from toolchain failures.
+
+This means the current state is governed semi-automation, not autonomous or fully controlled automation.
+
 ## Current prohibited capability
 
 - auto-merge,
@@ -60,7 +78,8 @@ Level 3.2 — Governed Controlled Automation
 - deployment,
 - Supabase/RLS,
 - n8n orchestration,
-- customer data access.
+- customer data access,
+- claims of autonomous factory execution.
 
 ## Current restrictions
 
@@ -82,6 +101,12 @@ M7 — first product-line dry-run
 
 M7 may not start until MR-001 is merged and current maturity/status alignment is complete.
 
+## Maturity caution
+
+M7 must not be treated as proof of autonomy.
+
+The next improvement target is to reduce hidden operator load and prove that product-line routing can produce useful, reviewable evidence with less manual reconstruction.
+
 ## Decision rule
 
 The factory may not claim a maturity level higher than the latest verified gate.
@@ -91,4 +116,5 @@ The next maturity gate may only be attempted when:
 - prior gate evidence is recorded,
 - documented maturity matches actual verified capability,
 - management-system controls are current,
+- operator dependency is visible and controlled,
 - Head of Factory / Release Authority approval is retained.
