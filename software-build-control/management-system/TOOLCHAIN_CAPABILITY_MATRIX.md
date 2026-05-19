@@ -55,6 +55,37 @@ The factory must not assume all AI tools have equal capability.
 | Human release authority | Mandatory |
 | Generated-artifact merge payloads | Restricted |
 
+## Current verified toolchain capability
+
+GitHub Actions:
+
+- verified for issue-driven dry-run
+- verified for artifact handoff
+- verified for readiness decision propagation
+
+GitHub PR route:
+
+- verified for documentation-only PR-write
+- verified for low-risk runtime mutation
+- verified for related runtime/control propagation
+
+Codex / AI build station:
+
+- still requires readiness checks
+- not approved for autonomous merge
+- not approved for broad repair
+
+ChatGPT / Claude review stations:
+
+- planning, audit, review, and recommendation only
+- no release authority
+
+Next required capability review:
+
+```text
+M7 product-line dry-run
+```
+
 ## Capability review triggers
 
 Review the matrix when:
