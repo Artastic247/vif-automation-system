@@ -1,0 +1,104 @@
+name: VIF Agent Task
+about: Controlled VIF work order for Codex or another agent
+title: "[VIF Agent Task]: "
+labels: ["agent-task", "needs-scope-lock"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for controlled changes to the VIF factory, templates, gates, or software-build-control records.
+
+  - type: dropdown
+    id: change_class
+    attributes:
+      label: Change classification
+      options:
+        - Factory method update
+        - Template update
+        - Gate/control update
+        - Documentation-only update
+        - Verification/control evidence update
+        - Product-specific lesson converted into reusable factory rule
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem must be solved or what factory control must be improved?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and evidence
+      description: Link issues, PRs, logs, repo files, or notes that justify the change.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope_included
+    attributes:
+      label: Scope included
+      description: What is allowed to change?
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope_excluded
+    attributes:
+      label: Scope excluded
+      description: What must not change?
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: Clear completion criteria.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification required
+      description: Checks or evidence required before merge.
+      value: |
+        - VIF required-file gate passes.
+        - Repository guard passes.
+        - PR template completed.
+        - Human release authority reviews before merge.
+    validations:
+      required: true
+
+  - type: textarea
+    id: protected_scope
+    attributes:
+      label: Protected-scope confirmation
+      description: State whether any protected scope is touched.
+      value: |
+        This task does not touch app repositories, Supabase, RLS, edge functions, deployment, n8n, customer data, DOS FMEA repair, or protected factory logic.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: scope_lock
+    attributes:
+      label: Scope lock confirmation
+      options:
+        - label: The task has one primary objective.
+          required: true
+        - label: Scope exclusions are stated.
+          required: true
+        - label: Acceptance criteria are testable.
+          required: true
+        - label: Protected-scope impact is declared.
+          required: true
