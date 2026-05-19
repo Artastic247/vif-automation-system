@@ -1,15 +1,13 @@
 ---
-id: auto-pr-review
 name: AUTO-002 PR Review Gate
-trigger:
-  - pull request opened
-  - pull request ready for review
-  - operator requests AUTO-002 review
-  - PR branch updated after repair
-purpose: Review scoped PRs and return PASS or HOLD before human merge.
+description: Use when a pull request needs deterministic AUTO-002 review for scoped changes, protected-scope checks, validation evidence, and PASS or HOLD routing before human merge.
 ---
 
 # AUTO-002 PR Review Gate
+
+## Metadata
+- id: auto-pr-review
+- triggers: pull request opened, pull request ready for review, operator requests AUTO-002 review, PR branch updated after repair
 
 ## Purpose
 Use AUTO-002 or equivalent Codex review to verify that a PR is scoped, validated, safe to merge by a human, and free of protected-scope changes.
@@ -36,7 +34,7 @@ Use AUTO-002 or equivalent Codex review to verify that a PR is scoped, validated
 
 ## Method
 1. Confirm the PR targets `main`.
-2. Confirm the branch came from current `origin/main` or has been refreshed against it.
+2. Confirm the branch contains current `origin/main` or has been refreshed against it.
 3. List changed files and compare them with expected files.
 4. Reject forbidden paths, generated report commits, broad repair, and protected-scope changes.
 5. Review validation output and rerun deterministic checks when practical.
@@ -52,6 +50,7 @@ Use AUTO-002 or equivalent Codex review to verify that a PR is scoped, validated
 - generated report commits
 - PR does not target `main`
 - issue number missing
+- branch does not contain current `origin/main`
 - broad or unrelated repair
 - no rollback path
 
