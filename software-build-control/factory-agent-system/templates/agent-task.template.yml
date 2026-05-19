@@ -1,0 +1,107 @@
+name: Agent Task
+about: Controlled work package for AI coding agent execution
+title: "[Agent Task]: "
+labels: ["agent-task", "needs-scope-lock"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to create a controlled task for Codex or another coding agent.
+
+  - type: input
+    id: target_repo
+    attributes:
+      label: Target repo
+      description: Repository where the work must be performed.
+      placeholder: owner/repo
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem must be solved?
+      placeholder: Describe the current issue or desired change.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Product/process context the agent must respect.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope_included
+    attributes:
+      label: Scope included
+      description: What the agent is allowed to change.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope_excluded
+    attributes:
+      label: Scope excluded
+      description: What the agent must not change.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: Clear, testable criteria for completion.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification required
+      description: Commands/checks the agent must run or classify.
+      value: |
+        - npm run typecheck --if-present
+        - npm run lint --if-present
+        - npm test --if-present
+        - npm run build --if-present
+    validations:
+      required: true
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints and risk controls
+      description: Schema/auth/permissions/data/release restrictions.
+      placeholder: State any hard restrictions.
+    validations:
+      required: false
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence / references
+      description: Links to screenshots, logs, PRs, files, or notes.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope_lock
+    attributes:
+      label: Scope lock confirmation
+      options:
+        - label: The task has one primary objective.
+          required: true
+        - label: Scope exclusions are stated.
+          required: true
+        - label: Acceptance criteria are testable.
+          required: true
+        - label: Any schema/auth/permission/data changes are explicitly approved or excluded.
+          required: true
