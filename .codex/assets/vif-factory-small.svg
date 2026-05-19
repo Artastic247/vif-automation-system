@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="VIF Factory">
+  <rect width="64" height="64" rx="14" fill="#0F766E"/>
+  <path d="M14 42V24l10 8v-8l10 8v-8l16 12v6H14Z" fill="#ECFEFF"/>
+  <path d="M20 46h28v4H20zM21 36h6v6h-6zM31 36h6v6h-6zM41 36h6v6h-6z" fill="#99F6E4"/>
+</svg>

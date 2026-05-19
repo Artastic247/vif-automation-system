@@ -1,9 +1,10 @@
 {
-  "name": "vif-codex-agent-pack",
+  "name": "vif-factory",
   "version": "0.1.0",
-  "description": "Codex-ready VIF factory station instructions, skills, hooks, and commands for issue-to-PR, PR review, and repair workflows.",
+  "description": "Codex plugin pack for the VIF factory issue-to-PR, AUTO-002 review, repair-loop, and factory-memory operating route.",
   "author": {
     "name": "VIF Factory",
+    "email": "",
     "url": "https://github.com/Artastic247"
   },
   "homepage": "https://github.com/Artastic247/vif-automation-system",
@@ -19,21 +20,26 @@
   "skills": "./.codex/skills/",
   "hooks": "./.codex/hooks/",
   "interface": {
-    "displayName": "VIF Codex Agent Pack",
-    "shortDescription": "Run VIF factory workflows",
-    "longDescription": "VIF Codex Agent Pack provides controlled operating instructions, skills, hooks, and command runbooks for repeatable issue-to-PR execution, deterministic PR review, and scoped repair loops while preserving human merge authority.",
+    "displayName": "VIF Factory",
+    "shortDescription": "Run VIF factory issue, review, repair, and memory workflows.",
+    "longDescription": "A repo-root Codex plugin dry run that packages the VIF factory operating contract, AUTO-001 issue-to-PR skill, AUTO-002 review gate, repair loop, hooks, and command references for repeatable factory execution.",
     "developerName": "VIF Factory",
-    "category": "Developer Tools",
+    "category": "Coding",
     "capabilities": [
       "Interactive",
-      "Write"
+      "Write",
+      "Code Review"
     ],
     "websiteURL": "https://github.com/Artastic247/vif-automation-system",
+    "privacyPolicyURL": "",
+    "termsOfServiceURL": "",
     "defaultPrompt": [
-      "Run AUTO-001 for this issue.",
+      "Run the VIF issue-to-PR route.",
       "Review this PR with AUTO-002.",
-      "Repair this HOLD with AUTO-003."
+      "Repair a VIF HOLD result."
     ],
-    "brandColor": "#2563EB"
+    "brandColor": "#0F766E",
+    "composerIcon": "./.codex/assets/vif-factory-small.svg",
+    "screenshots": []
   }
 }
