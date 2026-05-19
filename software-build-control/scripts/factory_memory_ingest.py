@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import shutil
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -102,7 +101,8 @@ def write_markdown(path: Path, content: str, dry_run: bool) -> None:
 
 
 def build_outputs(root: Path, source: IngestSource, dry_run: bool) -> dict[str, str]:
-    ensure_memory_dirs(root)
+    if not dry_run:
+        ensure_memory_dirs(root)
     stamp = utc_stamp()
     base_slug = slugify(f"{source.source_id}-{source.title}")
     source_name = f"{stamp}-{base_slug}.md"
