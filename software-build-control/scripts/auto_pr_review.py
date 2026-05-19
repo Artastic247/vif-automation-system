@@ -51,9 +51,11 @@ AUTO_005_FACTORY_MEMORY_POLLER_PATTERNS = (
 
 AUTO_006_FACTORY_AUTOMATION_COMPLETION_PATTERNS = (
     ".codex/AGENTS.md",
+    ".github/workflows/factory-auto-merge.yml",
     ".github/workflows/factory-memory-ingest.yml",
     "factory-memory/registers/**",
     "software-build-control/scripts/auto_pr_review.py",
+    "software-build-control/scripts/factory_auto_merge_guard.py",
 )
 
 FORBIDDEN_PATTERNS = (
