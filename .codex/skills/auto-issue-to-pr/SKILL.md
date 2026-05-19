@@ -1,14 +1,13 @@
 ---
-id: auto-issue-to-pr
 name: AUTO-001 Issue to PR Execution
-trigger:
-  - issue assigned to Codex
-  - operator requests automation execution
-  - doc_control_update task
-purpose: Use AUTO-001 or equivalent Codex execution to create scoped PRs from issues.
+description: Use when an issue is assigned to Codex or an operator requests AUTO-001 execution to create a scoped branch and pull request from GitHub main without auto-merge.
 ---
 
 # AUTO-001 Issue to PR Execution
+
+## Metadata
+- id: auto-issue-to-pr
+- triggers: issue assigned to Codex, operator requests automation execution, doc_control_update task
 
 ## Purpose
 Use AUTO-001 or equivalent Codex execution to create scoped PRs from GitHub issues without relying on ad hoc chat prompts.
@@ -38,7 +37,7 @@ Use AUTO-001 or equivalent Codex execution to create scoped PRs from GitHub issu
 3. Update only expected files.
 4. Run validation that matches the task class.
 5. Push the branch.
-6. Open one PR against `main`.
+6. Open one PR against `main` with AUTO-002-compatible metadata.
 7. Ensure AUTO-002 can review the PR.
 8. Do not merge.
 
