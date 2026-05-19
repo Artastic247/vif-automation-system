@@ -58,6 +58,54 @@ class FactoryAutomationControlTests(unittest.TestCase):
             self.assertTrue(output_file.exists())
             self.assertIn("AUTO-002 Review Result: HOLD", output_file.read_text(encoding="utf-8"))
 
+    def test_auto_pr_review_accepts_bom_prefixed_changed_file_list(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            body_file = temp / "pr_body.md"
+            changed_files_file = temp / "changed_files.txt"
+            output_file = temp / "review.md"
+
+            body_file.write_text(
+                "\n".join(
+                    [
+                        "workflow_dispatch only",
+                        "expected-file scope check",
+                        "no auto-merge",
+                        "human merge required",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            changed_files_file.write_text("\ufeff.github/workflows/main.yml\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(REPO_ROOT / "software-build-control/scripts/auto_pr_review.py"),
+                    "--repo",
+                    "Artastic247/vif-automation-system",
+                    "--pr-number",
+                    "89",
+                    "--head-branch",
+                    "auto-issue-87-auto-006-factory-automation-corrective-controls",
+                    "--title",
+                    "AUTO: Issue #87 - workflow syntax repair",
+                    "--body-file",
+                    str(body_file),
+                    "--changed-files-file",
+                    str(changed_files_file),
+                    "--output-file",
+                    str(output_file),
+                    "--fail-on-hold",
+                ],
+                cwd=REPO_ROOT,
+                text=True,
+                capture_output=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("AUTO-002 Review Result: PASS", output_file.read_text(encoding="utf-8"))
+
     def test_factory_memory_ingest_skips_already_processed_issue(self) -> None:
         workflow = (REPO_ROOT / ".github/workflows/factory-memory-ingest.yml").read_text(encoding="utf-8")
 
@@ -87,6 +135,25 @@ class FactoryAutomationControlTests(unittest.TestCase):
         self.assertIn("MERGE_OUTPUT=$(mktemp)", workflow)
         self.assertIn("clean status", workflow)
         self.assertIn('gh pr merge "$PR_NUMBER" --squash --delete-branch --match-head-commit "$HEAD_SHA"', workflow)
+
+    def test_auto_006_review_profile_allows_workflow_syntax_repairs(self) -> None:
+        script = (REPO_ROOT / "software-build-control/scripts/auto_pr_review.py").read_text(encoding="utf-8")
+
+        self.assertIn('".github/workflows/main.yml"', script)
+        self.assertIn('".github/workflows/control-pack-validate.yml"', script)
+        self.assertIn('".github/workflows/auto-doc-control-pr.yml"', script)
+        self.assertIn('".github/workflows/app-build-validate.yml"', script)
+
+    def test_workflow_files_have_loadable_triggers_and_indented_heredocs(self) -> None:
+        main_workflow = (REPO_ROOT / ".github/workflows/main.yml").read_text(encoding="utf-8")
+        control_workflow = (REPO_ROOT / ".github/workflows/control-pack-validate.yml").read_text(encoding="utf-8")
+        app_build_workflow = (REPO_ROOT / ".github/workflows/app-build-validate.yml").read_text(encoding="utf-8")
+        auto_doc_workflow = (REPO_ROOT / ".github/workflows/auto-doc-control-pr.yml").read_text(encoding="utf-8")
+
+        self.assertIn("workflow_dispatch:", main_workflow)
+        self.assertIn('name: "AUTO-001: issue-to-PR execution loop"', auto_doc_workflow)
+        self.assertNotIn("\nimport json\n", control_workflow)
+        self.assertNotIn("\nimport json\n", app_build_workflow)
 
 
 if __name__ == "__main__":

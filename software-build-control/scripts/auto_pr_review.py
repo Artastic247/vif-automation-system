@@ -51,9 +51,13 @@ AUTO_005_FACTORY_MEMORY_POLLER_PATTERNS = (
 
 AUTO_006_FACTORY_AUTOMATION_COMPLETION_PATTERNS = (
     ".codex/AGENTS.md",
+    ".github/workflows/app-build-validate.yml",
+    ".github/workflows/auto-doc-control-pr.yml",
     ".github/workflows/auto-pr-review.yml",
+    ".github/workflows/control-pack-validate.yml",
     ".github/workflows/factory-auto-merge.yml",
     ".github/workflows/factory-memory-ingest.yml",
+    ".github/workflows/main.yml",
     "factory-memory/registers/**",
     "software-build-control/scripts/auto_pr_review.py",
     "software-build-control/scripts/factory_auto_merge_guard.py",
@@ -92,7 +96,12 @@ def read_lines(path: str) -> list[str]:
     p = Path(path)
     if not p.exists():
         return []
-    return [line.strip() for line in p.read_text(encoding="utf-8").splitlines() if line.strip()]
+    lines: list[str] = []
+    for line in p.read_text(encoding="utf-8-sig").splitlines():
+        normalized = line.strip().lstrip("\ufeff")
+        if normalized:
+            lines.append(normalized)
+    return lines
 
 
 def read_text(path: str) -> str:
