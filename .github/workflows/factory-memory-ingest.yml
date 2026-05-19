@@ -80,6 +80,9 @@ jobs:
           gh label create factory-memory-ingested \
             --color 0e8a16 \
             --description "Factory memory ingest PR created" >/dev/null 2>&1 || true
+          gh label create factory-auto-merge \
+            --color 5319e7 \
+            --description "Eligible for guarded VIF factory auto-merge" >/dev/null 2>&1 || true
 
           if [ "$EVENT_NAME" = "schedule" ]; then
             PENDING_JSON=$(gh issue list \
@@ -227,8 +230,8 @@ jobs:
           - issue comment trigger: /factory-memory ingest
           - scheduled poller fallback
           - expected-file scope check
-          - no auto-merge
-          - human merge required
+          - no auto-merge outside the guarded generated-memory route
+          - factory-auto-merge label is required before GitHub auto-merge is requested
           - GitHub main is source of truth
           - one issue = one branch = one PR
           - generated reports are artifacts, not source payloads
@@ -239,7 +242,7 @@ jobs:
 
           ## Gate
 
-          AUTO-002 may recommend PASS or HOLD. Human merge authority remains mandatory.
+          AUTO-002 may recommend PASS or HOLD. Generated memory PRs may request guarded auto-merge only after AUTO-002 PASS and file-scope validation.
           EOF
 
           sed -i 's/^          //' pr_body.md
@@ -254,7 +257,8 @@ jobs:
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
 
           gh issue edit "$ISSUE_NUMBER" --add-label factory-memory-ingested || true
-          gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest PR opened: ${PR_URL}\n\nRun: ${RUN_URL}" || true
+          gh pr edit "$PR_NUMBER" --add-label factory-auto-merge || true
+          gh issue comment "$ISSUE_NUMBER" --body "Factory memory ingest PR opened: ${PR_URL}\n\nRun: ${RUN_URL}\n\nGuarded auto-merge label applied to the PR." || true
 
       - name: Run inline AUTO-002 review
         if: steps.source.outputs.skip != 'true' && steps.commit.outputs.committed == 'true' && steps.pr.outputs.pr_number != ''
