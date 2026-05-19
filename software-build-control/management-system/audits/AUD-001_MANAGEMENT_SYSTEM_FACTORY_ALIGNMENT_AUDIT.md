@@ -300,8 +300,7 @@ The system is recoverable and improving, but further automation should be held u
 ## 13. Required next actions before further automation
 
 ### Action 1: Merge CA-002 after review
-
-PR #25 should be reviewed and merged if it remains clean and scope-controlled.
+nPR #25 should be reviewed and merged if it remains clean and scope-controlled.
 
 ### Action 2: Open CA-003 or OFI task for toolchain capability matrix
 
@@ -340,3 +339,50 @@ The VIF factory and management system became partially muddled during rapid buil
 The corrective response is now moving in the right direction.
 
 The immediate priority is not more automation. The immediate priority is to complete management-system alignment so the factory is built around controlled processes rather than around tool behaviour.
+
+## 15. Post-audit effectiveness addendum
+
+Original audit verdict:
+
+```text
+PARTIALLY ALIGNED / NOT YET MATURE
+```
+
+Post-corrective-action status:
+
+```text
+Management-system governance is now effective for Level 3.2 governed controlled automation.
+```
+
+Corrective actions completed:
+
+- CA-001
+- CA-002
+- CA-003
+- CA-004
+
+Verification completed:
+
+- VER-001
+- M5A
+- VER-002
+- M6A
+- M6B
+
+Current remaining limitation:
+
+The factory has not yet completed a real product-line dry-run.
+
+Updated maturity:
+
+```text
+Level 3.2 — Governed Controlled Automation
+```
+
+Next required gate:
+
+```text
+M7 — first product-line dry-run
+```
+
+The original audit findings remain valid as historical evidence. This addendum records post-audit effectiveness and the current aligned maturity state after corrective actions and verifications were completed.
