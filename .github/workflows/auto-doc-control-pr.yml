@@ -1,0 +1,113 @@
+name: AUTO-001 Doc Control PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number for the automation run'
+        required: true
+        type: string
+      task_class:
+        description: 'Task class for the automation execution'
+        required: true
+        type: string
+      short_task_name:
+        description: 'Short task name for branch creation'
+        required: true
+        type: string
+      expected_files:
+        description: 'Multiline list of expected markdown files to change'
+        required: true
+        type: string
+      instruction_text:
+        description: 'Multiline instruction text for the executor'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
+jobs:
+  run:
+    name: AUTO-001: issue-to-PR execution loop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Prepare inputs
+        run: |
+          printf '%s\n' "${{ inputs.expected_files }}" > expected_files.txt
+          printf '%s\n' "${{ inputs.instruction_text }}" > instruction_text.txt
+          echo "ISSUE_NUMBER=${{ inputs.issue_number }}" >> $GITHUB_ENV
+          echo "TASK_CLASS=${{ inputs.task_class }}" >> $GITHUB_ENV
+          echo "SHORT_TASK_NAME=${{ inputs.short_task_name }}" >> $GITHUB_ENV
+
+      - name: Create branch
+        run: |
+          BRANCH_NAME="auto-issue-${ISSUE_NUMBER}-${SHORT_TASK_NAME}"
+          BRANCH_NAME="$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | tr ' /' '-' | tr -cd '[:alnum:]_.-')"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          git checkout -b "$BRANCH_NAME"
+
+      - name: Run executor
+        run: |
+          python software-build-control/scripts/auto_doc_control_pr.py \
+            --issue-number "$ISSUE_NUMBER" \
+            --task-class "$TASK_CLASS" \
+            --short-task-name "$SHORT_TASK_NAME" \
+            --expected-files-file expected_files.txt \
+            --instruction-text-file instruction_text.txt
+
+      - name: Verify changed files match expected files
+        run: |
+          git status --porcelain --untracked-files=all > status.txt
+          awk '{print $2}' status.txt | grep -v '^artifacts/' | sort > actual_changed.txt
+          grep -v '^[[:space:]]*$' expected_files.txt | sed 's/\r$//' | sort > expected_sorted.txt
+
+          echo 'Actual changed files:'
+          cat actual_changed.txt
+          echo 'Expected files:'
+          cat expected_sorted.txt
+
+          if ! diff -u expected_sorted.txt actual_changed.txt; then
+            echo 'Changed files do not exactly match expected files.'
+            exit 1
+          fi
+
+      - name: Commit expected changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          xargs git add < expected_sorted.txt
+          git commit -m "AUTO-001: update docs for issue #${ISSUE_NUMBER}"
+
+      - name: Push branch
+        run: |
+          git push --set-upstream origin "$BRANCH_NAME"
+
+      - name: Create pull request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "$BRANCH_NAME" \
+            --title "AUTO: Issue #${ISSUE_NUMBER} doc-control update - ${SHORT_TASK_NAME}" \
+            --body "This PR was created by the AUTO-001 automation execution workflow.\n\nIssue: #${ISSUE_NUMBER}\nTask class: ${TASK_CLASS}\nShort task name: ${SHORT_TASK_NAME}\nBranch: ${BRANCH_NAME}\n\nControls confirmed by workflow:\n- workflow_dispatch only\n- branch/PR creation automated\n- expected-file scope check included\n- generated reports rejected\n- no auto-merge\n- human merge required\n\nExpected files:\n$(cat expected_sorted.txt)"
+
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-doc-control-summary
+          path: artifacts/auto-doc-control-summary.md
