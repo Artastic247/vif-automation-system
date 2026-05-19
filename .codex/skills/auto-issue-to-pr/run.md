@@ -24,11 +24,15 @@
 ```bash
 git remote -v
 git fetch origin --prune
-git checkout -B auto-issue-${ISSUE_NUMBER}-${SHORT_TASK_NAME} origin/main
+SHORT_TASK_SLUG=$(printf '%s' "${SHORT_TASK_NAME}" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g')
+TASK_BRANCH="auto-issue-${ISSUE_NUMBER}-${SHORT_TASK_SLUG}"
+test -n "${ISSUE_NUMBER}"
+test -n "${SHORT_TASK_SLUG}"
+git checkout -B "${TASK_BRANCH}" origin/main
 git status --short
 ```
 
-Stop if `origin/main` is unavailable, the checkout fails, the workspace is dirty before task work begins, or the issue number is missing.
+Stop if `origin/main` is unavailable, the checkout fails, the workspace is dirty before task work begins, the issue number is missing, or the sanitized task slug is empty.
 
 ## Execute
 
@@ -52,14 +56,52 @@ Every changed file must be listed in `EXPECTED_FILES`. If any extra file appears
 
 Run the narrowest available deterministic validation first. Use repository-specific tests, linters, scripts, or document checks when present. If no automated validation exists, record a manual validation statement and the reason automation was unavailable.
 
+## Create PR body
+
+Create `pr-body.md` before calling `gh pr create`. The body must contain the exact AUTO-002 control tokens: `workflow_dispatch only`, `expected-file scope check`, `no auto-merge`, and `human merge required`.
+
+```bash
+cat > pr-body.md <<EOF
+## Summary
+${INSTRUCTION_TEXT}
+
+## Issue
+Issue #${ISSUE_NUMBER}
+
+## Task class
+${TASK_CLASS}
+
+## Branch
+${TASK_BRANCH}
+
+## Changed files
+${EXPECTED_FILES}
+
+## Validation
+- <record commands or evidence here>
+
+## AUTO-002 controls
+- workflow_dispatch only
+- expected-file scope check
+- no auto-merge
+- human merge required
+
+## Protected scope
+Protected scope unchanged unless explicitly approved in Issue #${ISSUE_NUMBER}.
+
+## Next action
+Run AUTO-002 review, then Codex review, then human merge only if accepted.
+EOF
+```
+
 ## Create PR
 
 ```bash
-git push -u origin auto-issue-${ISSUE_NUMBER}-${SHORT_TASK_NAME}
-gh pr create --base main --head auto-issue-${ISSUE_NUMBER}-${SHORT_TASK_NAME} --title "AUTO-001 issue ${ISSUE_NUMBER}: ${SHORT_TASK_NAME}" --body-file pr-body.md
+git push -u origin "${TASK_BRANCH}"
+gh pr create --base main --head "${TASK_BRANCH}" --title "AUTO: Issue #${ISSUE_NUMBER} - ${SHORT_TASK_NAME}" --body-file pr-body.md
 ```
 
-The PR body must include branch, issue number, task class, changed files, validation evidence, protected-scope confirmation, and next action.
+The PR body must include branch, issue number, task class, changed files, validation evidence, protected-scope confirmation, and next action. It must preserve the AUTO-002 control tokens exactly.
 
 ## After PR
 
