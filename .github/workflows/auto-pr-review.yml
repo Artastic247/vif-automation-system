@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   review:
-    if: startsWith(github.event.pull_request.head.ref, 'auto-issue-')
+    if: startsWith(github.event.pull_request.head.ref, 'auto-issue-') || startsWith(github.event.pull_request.head.ref, 'codex-plugin-')
     runs-on: ubuntu-latest
 
     steps:

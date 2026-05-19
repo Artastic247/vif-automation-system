@@ -10,11 +10,21 @@ from __future__ import annotations
 import argparse
 import fnmatch
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Sequence
 
-ALLOWED_PATTERNS = (
+AUTO_DOC_PATTERNS = (
     "software-build-control/management-system/**/*.md",
     "software-build-control/01-app-build-line/**/*.md",
+)
+
+PLUGIN_PACK_PATTERNS = (
+    ".codex/**",
+    ".codex-plugin/plugin.json",
+)
+
+AUTO_002_COVERAGE_PATTERNS = (
+    ".github/workflows/auto-pr-review.yml",
+    "software-build-control/scripts/auto_pr_review.py",
 )
 
 FORBIDDEN_PATTERNS = (
@@ -59,12 +69,30 @@ def read_text(path: str) -> str:
     return p.read_text(encoding="utf-8")
 
 
-def is_allowed_file(path: str) -> bool:
-    return any(fnmatch.fnmatch(path, pattern) for pattern in ALLOWED_PATTERNS)
+def matches_any(path: str, patterns: Sequence[str]) -> bool:
+    return any(fnmatch.fnmatch(path, pattern) for pattern in patterns)
 
 
-def is_forbidden_file(path: str) -> bool:
-    return any(fnmatch.fnmatch(path, pattern) for pattern in FORBIDDEN_PATTERNS)
+def review_profile(head_branch: str) -> tuple[str, tuple[str, ...], str]:
+    if head_branch.startswith("codex-plugin-"):
+        return "Codex plugin pack", PLUGIN_PACK_PATTERNS, "Head branch uses codex-plugin- prefix"
+    if head_branch.startswith("auto-issue-") and "auto-002" in head_branch and "coverage" in head_branch:
+        return "AUTO-002 coverage repair", AUTO_002_COVERAGE_PATTERNS, "Head branch uses controlled AUTO-002 coverage prefix"
+    if head_branch.startswith("auto-issue-"):
+        return "AUTO documentation/control", AUTO_DOC_PATTERNS, "Head branch uses auto-issue- prefix"
+    return "unsupported", (), "Head branch is not an approved AUTO-002 review branch"
+
+
+def is_allowed_file(path: str, allowed_patterns: Sequence[str]) -> bool:
+    return matches_any(path, allowed_patterns)
+
+
+def is_forbidden_file(path: str, allowed_patterns: Sequence[str]) -> bool:
+    # Controlled exceptions are allowed only when the active review profile names
+    # those exact paths. Everything else still passes through the forbidden gate.
+    if is_allowed_file(path, allowed_patterns):
+        return False
+    return matches_any(path, FORBIDDEN_PATTERNS)
 
 
 def check_tokens(source: str, tokens: Iterable[str]) -> tuple[list[str], list[str]]:
@@ -86,18 +114,20 @@ def build_review(args: argparse.Namespace) -> tuple[str, bool]:
     checks_passed: list[str] = []
     checks_failed: list[str] = []
 
-    if args.head_branch.startswith("auto-issue-"):
-        checks_passed.append("Head branch uses auto-issue- prefix")
+    profile_name, allowed_patterns, branch_check = review_profile(args.head_branch)
+    if allowed_patterns:
+        checks_passed.append(branch_check)
+        checks_passed.append(f"Review profile: {profile_name}")
     else:
-        checks_failed.append("Head branch does not use auto-issue- prefix")
+        checks_failed.append(branch_check)
 
     if changed_files:
         checks_passed.append("Changed-file list is present")
     else:
         checks_failed.append("Changed-file list is empty")
 
-    forbidden_files = [path for path in changed_files if is_forbidden_file(path)]
-    out_of_scope_files = [path for path in changed_files if not is_allowed_file(path)]
+    forbidden_files = [path for path in changed_files if is_forbidden_file(path, allowed_patterns)]
+    out_of_scope_files = [path for path in changed_files if not is_allowed_file(path, allowed_patterns)]
 
     if forbidden_files:
         checks_failed.append("Forbidden files changed")
@@ -105,9 +135,9 @@ def build_review(args: argparse.Namespace) -> tuple[str, bool]:
         checks_passed.append("No forbidden files changed")
 
     if out_of_scope_files:
-        checks_failed.append("Files outside approved AUTO documentation/control scope changed")
+        checks_failed.append(f"Files outside approved {profile_name} scope changed")
     else:
-        checks_passed.append("All changed files are inside approved AUTO documentation/control scope")
+        checks_passed.append(f"All changed files are inside approved {profile_name} scope")
 
     title_passed, title_failed = check_tokens(args.title, REQUIRED_TITLE_TOKENS)
     checks_passed.extend([f"PR title contains '{token}'" for token in title_passed])
@@ -127,6 +157,7 @@ def build_review(args: argparse.Namespace) -> tuple[str, bool]:
         f"Repository: `{args.repo}`",
         f"PR number: `#{args.pr_number}`",
         f"Head branch: `{args.head_branch}`",
+        f"Review profile: `{profile_name}`",
         f"Title: `{args.title}`",
         "",
         "## Changed files",
