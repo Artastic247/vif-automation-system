@@ -14,7 +14,7 @@ on:
       short_task_name:
         description: Short slug for the generated branch.
         required: false
-        default: factory-memory-ingest
+        default: ingest
         type: string
 
 permissions:
@@ -65,10 +65,10 @@ jobs:
 
           SAFE_TASK=$(echo "$SHORT_TASK_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//')
           if [ -z "$SAFE_TASK" ]; then
-            SAFE_TASK="factory-memory-ingest"
+            SAFE_TASK="ingest"
           fi
 
-          BRANCH="auto-issue-${ISSUE_NUMBER}-${SAFE_TASK}-${GITHUB_RUN_ID}"
+          BRANCH="auto-issue-${ISSUE_NUMBER}-auto-003-factory-memory-${SAFE_TASK}-${GITHUB_RUN_ID}"
           echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
           echo "issue_title=$ISSUE_TITLE" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
