@@ -20,6 +20,8 @@ on:
     types: [labeled]
   issue_comment:
     types: [created]
+  schedule:
+    - cron: '*/15 * * * *'
 
 permissions:
   contents: write
@@ -29,6 +31,7 @@ permissions:
 jobs:
   ingest:
     if: >-
+      github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.issue.pull_request == null && github.event.label.name == 'factory-memory-ingest') ||
       (github.event_name == 'issue_comment' && github.event.action == 'created' && github.event.issue.pull_request == null && startsWith(github.event.comment.body, '/factory-memory ingest'))
@@ -62,7 +65,25 @@ jobs:
           ISSUE_NUMBER="${ISSUE_NUMBER_INPUT:-}"
           SHORT_TASK_NAME="${SHORT_TASK_NAME_INPUT:-ingest}"
 
-          if [ "$EVENT_NAME" != "workflow_dispatch" ]; then
+          gh label create factory-memory-ingested \
+            --color 0e8a16 \
+            --description "Factory memory ingest PR created" >/dev/null 2>&1 || true
+
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            PENDING_JSON=$(gh issue list \
+              --state open \
+              --label factory-memory-ingest \
+              --limit 20 \
+              --json number,labels)
+            ISSUE_NUMBER=$(echo "$PENDING_JSON" | jq -r '.[] | select(([.labels[].name] | index("factory-memory-ingested")) | not) | .number' | head -n 1)
+            SHORT_TASK_NAME="scheduled-ingest"
+            INPUT_FILE=""
+            if [ -z "$ISSUE_NUMBER" ]; then
+              echo "No pending factory-memory-ingest issues found."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          elif [ "$EVENT_NAME" != "workflow_dispatch" ]; then
             INPUT_FILE=""
             ISSUE_NUMBER="${EVENT_ISSUE_NUMBER:-}"
             SHORT_TASK_NAME="issue-ingest"
@@ -89,6 +110,7 @@ jobs:
           fi
 
           BRANCH="auto-issue-${ISSUE_NUMBER}-auto-003-factory-memory-${SAFE_TASK}-${GITHUB_RUN_ID}"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
           echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
           {
             echo "issue_title<<EOF"
@@ -99,10 +121,12 @@ jobs:
           echo "input_file=$INPUT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create ingest branch
+        if: steps.source.outputs.skip != 'true'
         run: |
           git checkout -B "${{ steps.source.outputs.branch }}" origin/main
 
       - name: Run deterministic ingest
+        if: steps.source.outputs.skip != 'true'
         env:
           INPUT_FILE: ${{ steps.source.outputs.input_file }}
           ISSUE_NUMBER: ${{ steps.source.outputs.issue_number }}
@@ -126,6 +150,7 @@ jobs:
           fi
 
       - name: Commit memory outputs
+        if: steps.source.outputs.skip != 'true'
         id: commit
         run: |
           set -euo pipefail
@@ -145,11 +170,11 @@ jobs:
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
       - name: Open memory ingest PR
-        if: steps.commit.outputs.committed == 'true'
+        if: steps.source.outputs.skip != 'true' && steps.commit.outputs.committed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr create \
+          PR_URL=$(gh pr create \
             --base main \
             --head "${{ steps.source.outputs.branch }}" \
             --title "AUTO: Issue #${{ steps.source.outputs.issue_number }} - Factory memory ingest" \
@@ -162,6 +187,7 @@ Deterministic AUTO-003 factory memory ingest.
 - workflow_dispatch only
 - issue label trigger: factory-memory-ingest
 - issue comment trigger: /factory-memory ingest
+- scheduled poller fallback
 - expected-file scope check
 - no auto-merge
 - human merge required
@@ -175,4 +201,7 @@ Changed files are limited to factory-memory outputs generated from the approved 
 
 ## Gate
 
-AUTO-002 may recommend PASS or HOLD. Human merge authority remains mandatory."
+AUTO-002 may recommend PASS or HOLD. Human merge authority remains mandatory.")
+
+          gh issue edit "${{ steps.source.outputs.issue_number }}" --add-label factory-memory-ingested || true
+          gh issue comment "${{ steps.source.outputs.issue_number }}" --body "Factory memory ingest PR opened: ${PR_URL}"
