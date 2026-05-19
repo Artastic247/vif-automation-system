@@ -16,6 +16,10 @@ on:
         required: false
         default: ingest
         type: string
+  issues:
+    types: [labeled]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
@@ -24,6 +28,10 @@ permissions:
 
 jobs:
   ingest:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.issue.pull_request == null && github.event.label.name == 'factory-memory-ingest') ||
+      (github.event_name == 'issue_comment' && github.event.action == 'created' && github.event.issue.pull_request == null && startsWith(github.event.comment.body, '/factory-memory ingest'))
     runs-on: ubuntu-latest
 
     steps:
@@ -42,11 +50,23 @@ jobs:
         id: source
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_FILE: ${{ inputs.input_file }}
-          ISSUE_NUMBER: ${{ inputs.issue_number }}
-          SHORT_TASK_NAME: ${{ inputs.short_task_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ISSUE_NUMBER: ${{ github.event.issue.number || '' }}
+          INPUT_FILE: ${{ github.event.inputs.input_file || '' }}
+          ISSUE_NUMBER_INPUT: ${{ github.event.inputs.issue_number || '' }}
+          SHORT_TASK_NAME_INPUT: ${{ github.event.inputs.short_task_name || 'ingest' }}
         run: |
           set -euo pipefail
+
+          INPUT_FILE="${INPUT_FILE:-}"
+          ISSUE_NUMBER="${ISSUE_NUMBER_INPUT:-}"
+          SHORT_TASK_NAME="${SHORT_TASK_NAME_INPUT:-ingest}"
+
+          if [ "$EVENT_NAME" != "workflow_dispatch" ]; then
+            INPUT_FILE=""
+            ISSUE_NUMBER="${EVENT_ISSUE_NUMBER:-}"
+            SHORT_TASK_NAME="issue-ingest"
+          fi
 
           if [ -z "$INPUT_FILE" ] && [ -z "$ISSUE_NUMBER" ]; then
             echo "Either input_file or issue_number is required." >&2
@@ -70,8 +90,13 @@ jobs:
 
           BRANCH="auto-issue-${ISSUE_NUMBER}-auto-003-factory-memory-${SAFE_TASK}-${GITHUB_RUN_ID}"
           echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
-          echo "issue_title=$ISSUE_TITLE" >> "$GITHUB_OUTPUT"
+          {
+            echo "issue_title<<EOF"
+            echo "$ISSUE_TITLE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "input_file=$INPUT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create ingest branch
         run: |
@@ -79,7 +104,7 @@ jobs:
 
       - name: Run deterministic ingest
         env:
-          INPUT_FILE: ${{ inputs.input_file }}
+          INPUT_FILE: ${{ steps.source.outputs.input_file }}
           ISSUE_NUMBER: ${{ steps.source.outputs.issue_number }}
           ISSUE_TITLE: ${{ steps.source.outputs.issue_title }}
         run: |
@@ -135,6 +160,8 @@ Deterministic AUTO-003 factory memory ingest.
 ## Controls
 
 - workflow_dispatch only
+- issue label trigger: factory-memory-ingest
+- issue comment trigger: /factory-memory ingest
 - expected-file scope check
 - no auto-merge
 - human merge required

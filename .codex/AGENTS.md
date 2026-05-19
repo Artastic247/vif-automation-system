@@ -25,6 +25,24 @@ Use AUTO-003 for deterministic memory ingestion:
 6. Open a PR for review.
 7. Do not treat generated memory as approved knowledge until human merge.
 
+## GitHub-native memory triggers
+AUTO-004 allows factory memory ingestion to start without local GitHub CLI access.
+
+Approved triggers:
+
+- Add the `factory-memory-ingest` label to an issue.
+- Comment `/factory-memory ingest` on an issue.
+- Run `Factory Memory Ingest` manually with `workflow_dispatch`.
+
+Trigger behavior:
+
+1. GitHub Actions resolves the source issue or input file.
+2. The workflow creates an `auto-issue-*auto-003-factory-memory*` branch from `main`.
+3. The workflow creates deterministic factory-memory stubs.
+4. The workflow opens a PR.
+5. AUTO-002 reviews the PR.
+6. Human merge authority remains mandatory.
+
 ## Core rules
 - GitHub main is source of truth.
 - Do not work from stale local main.
