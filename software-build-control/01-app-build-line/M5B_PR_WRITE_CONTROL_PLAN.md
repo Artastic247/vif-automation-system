@@ -208,10 +208,20 @@ Fail criteria:
 
 ## VER-002 verification note
 
-The first M5B PR-write verification is limited to documentation-only scope and does not permit runtime, workflow, generated-artifact, protected-scope or auto-merge actions.
+The first M5B PR-write verification was limited to documentation-only scope and did not permit runtime, workflow, generated-artifact, protected-scope or auto-merge actions.
+
+VER-002 passed and verified documentation-only PR-write under human release authority.
 
 ## Current decision
 
-M5B is approved for planning only.
+M5B planning is complete.
 
-Implementation remains HOLD until this plan is reviewed and accepted.
+Documentation-only PR-write has been verified through VER-002.
+
+Runtime/source mutation moved to M6A and M6B controls and has been verified for low-risk controlled task classes.
+
+Broader PR-write remains controlled by approved task class.
+
+Auto-merge remains prohibited.
+
+Product-line automation remains HOLD pending M7 dry-run.
