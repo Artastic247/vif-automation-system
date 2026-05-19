@@ -33,8 +33,18 @@ Approved triggers:
 - Add the `factory-memory-ingest` label to an issue.
 - Comment `/factory-memory ingest` on an issue.
 - Run `Factory Memory Ingest` manually with `workflow_dispatch`.
+- Send a `repository_dispatch` event of type `factory-memory-ingest` from an approved external factory orchestrator.
 
 AUTO-005 adds a scheduled fallback poller. If a webhook trigger is missed, the workflow scans open issues labeled `factory-memory-ingest` and not labeled `factory-memory-ingested`, then opens the same deterministic memory PR.
+
+AUTO-006 hardens the automation loop:
+
+- The scheduled poller runs every 5 minutes.
+- The source issue receives a run-start comment with the workflow run URL.
+- Existing open memory-ingest PRs are detected to prevent duplicates.
+- Workflow-created memory PRs receive an inline AUTO-002 review comment because GitHub can suppress chained workflow triggers from its default automation token.
+- If the repository secret `VIF_FACTORY_TOKEN` exists, workflows use it for GitHub CLI operations; otherwise they fall back to the default workflow token.
+- `VIF_FACTORY_TOKEN` is optional but required when the factory must trigger downstream workflows from workflow-created branches or PRs.
 
 Trigger behavior:
 
@@ -42,9 +52,14 @@ Trigger behavior:
 2. The workflow creates an `auto-issue-*auto-003-factory-memory*` branch from `main`.
 3. The workflow creates deterministic factory-memory stubs.
 4. The workflow opens a PR.
-5. AUTO-002 reviews the PR.
+5. The workflow runs inline AUTO-002 review for the memory PR.
 6. The source issue is marked `factory-memory-ingested` after PR creation.
 7. Human merge authority remains mandatory.
+
+## Multi-LLM routing boundary
+Do not claim autonomous multi-LLM routing until the provider is listed in `factory-memory/registers/LLM_PROVIDER_CAPABILITY_REGISTER.md` with its approved work classes, usage limits, tool permissions, and handoff rules.
+
+Provider adapters must stay thin. Shared VIF logic belongs in factory instructions, skills, registers, and workflows; platform-specific adapters belong only in the relevant Codex, Claude, Copilot, Cursor, Gemini, Ollama, or other runtime pack.
 
 ## Core rules
 - GitHub main is source of truth.
@@ -67,6 +82,7 @@ Trigger behavior:
 - protected scope changes
 - Supabase/RLS/deployment/customer data/app repo mutation unless specifically approved
 - treating unreviewed chats, summaries, or skill recommendations as approved factory knowledge
+- routing work to an unregistered LLM/provider adapter as if it were approved factory capacity
 
 ## Required preflight
 ```bash
@@ -86,6 +102,7 @@ git status --short
 - unclear scope
 - memory-ingest input cannot be found
 - generated memory output exceeds declared AUTO-003 scope
+- provider usage cap, tool permission, or platform authority cannot be confirmed
 
 ## Protected scope
 Treat these as protected unless the issue explicitly authorizes them:
