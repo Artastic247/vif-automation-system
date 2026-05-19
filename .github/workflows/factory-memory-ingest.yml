@@ -30,7 +30,7 @@ jobs:
   ingest:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'factory-memory-ingest') ||
+      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.issue.pull_request == null && github.event.label.name == 'factory-memory-ingest') ||
       (github.event_name == 'issue_comment' && github.event.action == 'created' && github.event.issue.pull_request == null && startsWith(github.event.comment.body, '/factory-memory ingest'))
     runs-on: ubuntu-latest
 
