@@ -1,0 +1,151 @@
+name: Factory Memory Ingest
+
+on:
+  workflow_dispatch:
+    inputs:
+      input_file:
+        description: Markdown or text file path inside the repository to ingest.
+        required: false
+        type: string
+      issue_number:
+        description: Existing issue number to ingest. If omitted for file input, the workflow creates a tracking issue.
+        required: false
+        type: string
+      short_task_name:
+        description: Short slug for the generated branch.
+        required: false
+        default: factory-memory-ingest
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve source
+        id: source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_FILE: ${{ inputs.input_file }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          SHORT_TASK_NAME: ${{ inputs.short_task_name }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$INPUT_FILE" ] && [ -z "$ISSUE_NUMBER" ]; then
+            echo "Either input_file or issue_number is required." >&2
+            exit 1
+          fi
+
+          if [ -z "$ISSUE_NUMBER" ]; then
+            ISSUE_URL=$(gh issue create \
+              --title "AUTO-003 memory ingest for ${INPUT_FILE}" \
+              --body "Factory memory ingest tracking issue for ${INPUT_FILE}. Human merge authority remains mandatory.")
+            ISSUE_NUMBER="${ISSUE_URL##*/}"
+          fi
+
+          ISSUE_TITLE=$(gh issue view "$ISSUE_NUMBER" --json title --jq '.title')
+          gh issue view "$ISSUE_NUMBER" --json body --jq '.body // ""' > issue_body.md
+
+          SAFE_TASK=$(echo "$SHORT_TASK_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//')
+          if [ -z "$SAFE_TASK" ]; then
+            SAFE_TASK="factory-memory-ingest"
+          fi
+
+          BRANCH="auto-issue-${ISSUE_NUMBER}-${SAFE_TASK}-${GITHUB_RUN_ID}"
+          echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "issue_title=$ISSUE_TITLE" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Create ingest branch
+        run: |
+          git checkout -B "${{ steps.source.outputs.branch }}" origin/main
+
+      - name: Run deterministic ingest
+        env:
+          INPUT_FILE: ${{ inputs.input_file }}
+          ISSUE_NUMBER: ${{ steps.source.outputs.issue_number }}
+          ISSUE_TITLE: ${{ steps.source.outputs.issue_title }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "$INPUT_FILE" ]; then
+            python software-build-control/scripts/factory_memory_ingest.py \
+              --root . \
+              --input-file "$INPUT_FILE" \
+              --source-id "issue-${ISSUE_NUMBER}" \
+              --output-json factory-memory/last-ingest-result.json
+          else
+            python software-build-control/scripts/factory_memory_ingest.py \
+              --root . \
+              --issue-number "$ISSUE_NUMBER" \
+              --issue-title "$ISSUE_TITLE" \
+              --issue-body-file issue_body.md \
+              --output-json factory-memory/last-ingest-result.json
+          fi
+
+      - name: Commit memory outputs
+        id: commit
+        run: |
+          set -euo pipefail
+
+          rm -f factory-memory/last-ingest-result.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add factory-memory
+
+          if git diff --cached --quiet; then
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit -m "AUTO-003 factory memory ingest"
+          git push origin "${{ steps.source.outputs.branch }}"
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open memory ingest PR
+        if: steps.commit.outputs.committed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "${{ steps.source.outputs.branch }}" \
+            --title "AUTO: Issue #${{ steps.source.outputs.issue_number }} - Factory memory ingest" \
+            --body "## Summary
+
+Deterministic AUTO-003 factory memory ingest.
+
+## Controls
+
+- workflow_dispatch only
+- expected-file scope check
+- no auto-merge
+- human merge required
+- GitHub main is source of truth
+- one issue = one branch = one PR
+- generated reports are artifacts, not source payloads
+
+## Scope
+
+Changed files are limited to factory-memory outputs generated from the approved ingest source.
+
+## Gate
+
+AUTO-002 may recommend PASS or HOLD. Human merge authority remains mandatory."
