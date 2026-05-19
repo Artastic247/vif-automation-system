@@ -34,6 +34,8 @@ Approved triggers:
 - Comment `/factory-memory ingest` on an issue.
 - Run `Factory Memory Ingest` manually with `workflow_dispatch`.
 
+AUTO-005 adds a scheduled fallback poller. If a webhook trigger is missed, the workflow scans open issues labeled `factory-memory-ingest` and not labeled `factory-memory-ingested`, then opens the same deterministic memory PR.
+
 Trigger behavior:
 
 1. GitHub Actions resolves the source issue or input file.
@@ -41,7 +43,8 @@ Trigger behavior:
 3. The workflow creates deterministic factory-memory stubs.
 4. The workflow opens a PR.
 5. AUTO-002 reviews the PR.
-6. Human merge authority remains mandatory.
+6. The source issue is marked `factory-memory-ingested` after PR creation.
+7. Human merge authority remains mandatory.
 
 ## Core rules
 - GitHub main is source of truth.

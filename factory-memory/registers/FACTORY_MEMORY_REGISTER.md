@@ -34,8 +34,16 @@ Track controlled factory-memory areas, ownership, review state, and routing rule
 | Manual workflow | Run `Factory Memory Ingest` with `workflow_dispatch`. | Creates deterministic memory stubs from an issue number or repository text file. |
 | Issue label | Add `factory-memory-ingest` to an issue. | Uses the labeled issue as source evidence and opens a memory PR. |
 | Issue comment | Comment `/factory-memory ingest` on an issue. | Uses the commented issue as source evidence and opens a memory PR. |
+| Scheduled poller | Runs every 15 minutes. | Picks up open issues labeled `factory-memory-ingest` and not labeled `factory-memory-ingested`. |
 
 All trigger routes must keep human merge authority. Triggered memory records are proposed evidence until merged.
+
+## Processing markers
+
+- Pending label: `factory-memory-ingest`
+- Processed label: `factory-memory-ingested`
+
+The processed label is applied only after a memory-ingest PR is opened.
 
 ## Next register gap
 
