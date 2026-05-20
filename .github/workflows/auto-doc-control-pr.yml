@@ -46,17 +46,40 @@ jobs:
           python-version: '3.12'
 
       - name: Prepare inputs
+        env:
+          ISSUE_NUMBER_INPUT: ${{ inputs.issue_number }}
+          TASK_CLASS_INPUT: ${{ inputs.task_class }}
+          SHORT_TASK_NAME_INPUT: ${{ inputs.short_task_name }}
+          EXPECTED_FILES_INPUT: ${{ inputs.expected_files }}
+          INSTRUCTION_TEXT_INPUT: ${{ inputs.instruction_text }}
         run: |
-          printf '%s\n' "${{ inputs.expected_files }}" > expected_files.txt
-          printf '%s\n' "${{ inputs.instruction_text }}" > instruction_text.txt
-          echo "ISSUE_NUMBER=${{ inputs.issue_number }}" >> $GITHUB_ENV
-          echo "TASK_CLASS=${{ inputs.task_class }}" >> $GITHUB_ENV
-          echo "SHORT_TASK_NAME=${{ inputs.short_task_name }}" >> $GITHUB_ENV
+          set -euo pipefail
+          INPUT_DIR="$RUNNER_TEMP/auto-doc-control"
+          mkdir -p "$INPUT_DIR"
+          printf '%s\n' "$EXPECTED_FILES_INPUT" > "$INPUT_DIR/expected_files.txt"
+          printf '%s\n' "$INSTRUCTION_TEXT_INPUT" > "$INPUT_DIR/instruction_text.txt"
+          {
+            echo "ISSUE_NUMBER=$ISSUE_NUMBER_INPUT"
+            echo "TASK_CLASS=$TASK_CLASS_INPUT"
+            echo "SHORT_TASK_NAME=$SHORT_TASK_NAME_INPUT"
+            echo "AUTO_DOC_INPUT_DIR=$INPUT_DIR"
+          } >> "$GITHUB_ENV"
 
       - name: Create branch
         run: |
-          BRANCH_NAME="auto-issue-${ISSUE_NUMBER}-${SHORT_TASK_NAME}"
-          BRANCH_NAME="$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | tr ' /' '-' | tr -cd '[:alnum:]_.-')"
+          set -euo pipefail
+          case "$ISSUE_NUMBER" in
+            ''|*[!0-9]*)
+              echo "issue_number must contain digits only."
+              exit 1
+              ;;
+          esac
+          SHORT_TASK_SLUG="$(printf '%s' "$SHORT_TASK_NAME" | tr '[:upper:]' '[:lower:]' | tr ' /' '-' | tr -cd '[:alnum:]_.-')"
+          if [ -z "$SHORT_TASK_SLUG" ]; then
+            echo "short_task_name produced an empty branch slug."
+            exit 1
+          fi
+          BRANCH_NAME="auto-issue-${ISSUE_NUMBER}-${SHORT_TASK_SLUG}"
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
           git checkout -b "$BRANCH_NAME"
 
@@ -66,21 +89,24 @@ jobs:
             --issue-number "$ISSUE_NUMBER" \
             --task-class "$TASK_CLASS" \
             --short-task-name "$SHORT_TASK_NAME" \
-            --expected-files-file expected_files.txt \
-            --instruction-text-file instruction_text.txt
+            --expected-files-file "$AUTO_DOC_INPUT_DIR/expected_files.txt" \
+            --instruction-text-file "$AUTO_DOC_INPUT_DIR/instruction_text.txt"
 
       - name: Verify changed files match expected files
         run: |
-          git status --porcelain --untracked-files=all > status.txt
-          awk '{print $2}' status.txt | grep -v '^artifacts/' | sort > actual_changed.txt
-          grep -v '^[[:space:]]*$' expected_files.txt | sed 's/\r$//' | sort > expected_sorted.txt
+          set -euo pipefail
+          {
+            git diff --name-only
+            git ls-files --others --exclude-standard
+          } | awk '!/^artifacts\//' | sort -u > "$RUNNER_TEMP/actual_changed.txt"
+          grep -v '^[[:space:]]*$' "$AUTO_DOC_INPUT_DIR/expected_files.txt" | sed 's/\r$//' | sort > "$RUNNER_TEMP/expected_sorted.txt"
 
           echo 'Actual changed files:'
-          cat actual_changed.txt
+          cat "$RUNNER_TEMP/actual_changed.txt"
           echo 'Expected files:'
-          cat expected_sorted.txt
+          cat "$RUNNER_TEMP/expected_sorted.txt"
 
-          if ! diff -u expected_sorted.txt actual_changed.txt; then
+          if ! diff -u "$RUNNER_TEMP/expected_sorted.txt" "$RUNNER_TEMP/actual_changed.txt"; then
             echo 'Changed files do not exactly match expected files.'
             exit 1
           fi
@@ -89,7 +115,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          xargs git add < expected_sorted.txt
+          git add --pathspec-from-file="$RUNNER_TEMP/expected_sorted.txt"
+          if git diff --cached --quiet; then
+            echo "No expected file changes were staged."
+            exit 1
+          fi
           git commit -m "AUTO-001: update docs for issue #${ISSUE_NUMBER}"
 
       - name: Push branch
@@ -100,11 +130,31 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+          {
+            echo "This PR was created by the AUTO-001 automation execution workflow."
+            echo
+            echo "Issue: #${ISSUE_NUMBER}"
+            echo "Task class: ${TASK_CLASS}"
+            echo "Short task name: ${SHORT_TASK_NAME}"
+            echo "Branch: ${BRANCH_NAME}"
+            echo
+            echo "Controls confirmed by workflow:"
+            echo "- workflow_dispatch only"
+            echo "- branch/PR creation automated"
+            echo "- expected-file scope check included"
+            echo "- generated reports rejected"
+            echo "- no auto-merge"
+            echo "- human merge required"
+            echo
+            echo "Expected files:"
+            sed 's/^/- `/' "$RUNNER_TEMP/expected_sorted.txt" | sed 's/$/`/'
+          } > "$RUNNER_TEMP/pr_body.md"
           gh pr create \
             --base main \
             --head "$BRANCH_NAME" \
             --title "AUTO: Issue #${ISSUE_NUMBER} doc-control update - ${SHORT_TASK_NAME}" \
-            --body "This PR was created by the AUTO-001 automation execution workflow.\n\nIssue: #${ISSUE_NUMBER}\nTask class: ${TASK_CLASS}\nShort task name: ${SHORT_TASK_NAME}\nBranch: ${BRANCH_NAME}\n\nControls confirmed by workflow:\n- workflow_dispatch only\n- branch/PR creation automated\n- expected-file scope check included\n- generated reports rejected\n- no auto-merge\n- human merge required\n\nExpected files:\n$(cat expected_sorted.txt)"
+            --body-file "$RUNNER_TEMP/pr_body.md"
 
       - name: Upload evidence artifact
         uses: actions/upload-artifact@v4
