@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -11,6 +11,7 @@ ALLOWED_SCOPES = [
 EVIDENCE_DIR = Path("artifacts")
 EVIDENCE_FILE = EVIDENCE_DIR / "auto-doc-control-summary.md"
 EVIDENCE_NOTE_MARKER = "AUTO-001 evidence note:"
+SUPPORTED_INSTRUCTION_PHRASE = "append evidence note"
 
 
 def parse_multi_line(value: str):
@@ -21,6 +22,7 @@ def parse_multi_line(value: str):
 
 def normalize_expected_files(raw_lines):
     paths = []
+    seen = set()
     for raw in raw_lines:
         path = raw.strip()
         if not path:
@@ -29,7 +31,11 @@ def normalize_expected_files(raw_lines):
             raise ValueError(f"Expected file path must be relative: {path}")
         if ".." in Path(path).parts:
             raise ValueError(f"Expected file path must not contain parent directory traversal: {path}")
-        paths.append(Path(path))
+        normalized = Path(path).as_posix()
+        if normalized in seen:
+            raise ValueError(f"Duplicate expected file path: {normalized}")
+        seen.add(normalized)
+        paths.append(Path(normalized))
     if not paths:
         raise ValueError("No expected files were provided.")
     return paths
@@ -37,16 +43,24 @@ def normalize_expected_files(raw_lines):
 
 def validate_path(path: Path):
     text_path = str(path.as_posix())
-    if path.suffix.lower() != ".md":
-        raise ValueError(f"Unsupported file type for expected file: {text_path}")
     if any(part == "reports" for part in path.parts):
         raise ValueError(f"Expected file path must not include generated reports folders: {text_path}")
     if path.suffix.lower() == ".json":
         raise ValueError(f"JSON evidence output is forbidden: {text_path}")
+    if path.suffix.lower() != ".md":
+        raise ValueError(f"Unsupported file type for expected file: {text_path}")
     if not any(path == scope or scope in path.parents for scope in ALLOWED_SCOPES):
         raise ValueError(
             f"Expected file path is outside approved scope: {text_path}."
             f" Allowed scopes: {[str(s) + '/**/*.md' for s in ALLOWED_SCOPES]}"
+        )
+
+
+def ensure_instruction_supported(instruction_text: str):
+    if SUPPORTED_INSTRUCTION_PHRASE not in instruction_text.lower():
+        raise ValueError(
+            "Unsupported instruction_text. Initial deterministic support requires "
+            f"the phrase '{SUPPORTED_INSTRUCTION_PHRASE}'."
         )
 
 
@@ -79,6 +93,37 @@ def ensure_task_class_supported(task_class: str):
         raise ValueError(f"Unsupported task class: {task_class}")
 
 
+def changed_paths_from_git():
+    result = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=all"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    changed = []
+    for line in result.stdout.splitlines():
+        if not line:
+            continue
+        path = line[3:].strip().replace("\\", "/")
+        changed.append(path)
+    return changed
+
+
+def verify_no_unexpected_changes(expected_files):
+    allowed = {path.as_posix() for path in expected_files}
+    allowed.add(EVIDENCE_FILE.as_posix())
+    unexpected = [
+        path
+        for path in changed_paths_from_git()
+        if path not in allowed
+    ]
+    if unexpected:
+        raise RuntimeError(
+            "Unexpected file change detected: "
+            + ", ".join(sorted(unexpected))
+        )
+
+
 def main():
     parser = argparse.ArgumentParser(description="AUTO-001 documentation control PR executor")
     parser.add_argument("--issue-number", required=True)
@@ -96,6 +141,7 @@ def main():
         validate_path(expected_file)
 
     ensure_task_class_supported(args.task_class)
+    ensure_instruction_supported(instruction_text)
 
     EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -150,6 +196,7 @@ def main():
 
     EVIDENCE_FILE.write_text("\n".join(summary_lines) + "\n", encoding="utf-8")
     print(f"Summary written to {EVIDENCE_FILE}")
+    verify_no_unexpected_changes(expected_files)
 
     if not updated and not skipped:
         raise RuntimeError("Executor did not process any expected files.")
